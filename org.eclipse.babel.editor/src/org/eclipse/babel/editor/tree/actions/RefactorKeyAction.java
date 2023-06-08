@@ -15,6 +15,8 @@ import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
 import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 
 /**
@@ -57,5 +59,10 @@ public class RefactorKeyAction extends AbstractTreeAction {
 
     }
     
+    @Override
+    protected void selectionChanged(IStructuredSelection selection) {
+    	/* Re-factoring is only supported if only one key is selected. */
+    	this.setEnabled(selection != null && selection.equals(StructuredSelection.EMPTY) == false && selection.size() == 1);
+    }
     
 }

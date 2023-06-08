@@ -38,8 +38,10 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -50,8 +52,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
@@ -187,7 +187,9 @@ public class KeyTreeContributor implements IKeyTreeContributor {
                 if (display.equals(Display.getCurrent())) {
                     display.asyncExec(new Runnable() {
                     public void run() {
-                        treeViewer.refresh();
+                    	if(treeViewer.getControl().isDisposed() == false) {
+                    		treeViewer.refresh();
+                    	}
                     }
                 });
             }
@@ -306,21 +308,27 @@ public class KeyTreeContributor implements IKeyTreeContributor {
      */
     private void contributeKeySync(final TreeViewer treeViewer) {
         // changes in tree selected key update the editor
-        treeViewer.getTree().addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                IStructuredSelection selection = (IStructuredSelection) treeViewer
-                        .getSelection();
-                if (selection != null && selection.getFirstElement() != null) {
-                    KeyTreeNode node = (KeyTreeNode) selection
-                            .getFirstElement();
-                    LOGGER.log(Level.INFO, "viewer key/hash:"
-                            + node.getMessageKey() + "/" + node.hashCode());
-                    editor.setSelectedKey(node.getMessageKey());
-                } else {
-                    editor.setSelectedKey(null);
+    	treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+
+                String selectedMessageKey = null;
+                if (selection != null ) {
+                	if ( selection.size() == 1) {
+                        KeyTreeNode node = (KeyTreeNode) selection
+                                .getFirstElement();
+                        LOGGER.log(Level.INFO, "viewer key/hash:"
+                                + node.getMessageKey() + "/" + node.hashCode());
+                        selectedMessageKey = node.getMessageKey();
+                	}
                 }
-            }
-        });
+
+                editor.setSelectedKey(selectedMessageKey);
+				
+			}
+		});
         // changes in editor selected key updates the tree
         editor.addChangeListener(new MessagesEditorChangeAdapter() {
             public void selectedKeyChanged(String oldKey, String newKey) {
