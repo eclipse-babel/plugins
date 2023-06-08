@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.tree.internal;
 
-import java.lang.reflect.Constructor;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -22,14 +21,15 @@ import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
 import org.eclipse.babel.core.message.tree.internal.IKeyTreeModelListener;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
-import org.eclipse.babel.editor.builder.Builder;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.babel.editor.internal.MessagesEditorMarkers;
 import org.eclipse.babel.editor.tree.IKeyTreeContributor;
-import org.eclipse.babel.editor.tree.actions.AbstractRenameKeyAction;
 import org.eclipse.babel.editor.tree.actions.AddKeyAction;
+import org.eclipse.babel.editor.tree.actions.CopyKeyAction;
+import org.eclipse.babel.editor.tree.actions.CutKeyAction;
 import org.eclipse.babel.editor.tree.actions.DeleteKeyAction;
+import org.eclipse.babel.editor.tree.actions.PasteKeyAction;
 import org.eclipse.babel.editor.tree.actions.RefactorKeyAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -37,7 +37,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -55,8 +54,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Pascal Essiembre
@@ -357,7 +354,6 @@ public class KeyTreeContributor implements IKeyTreeContributor {
 
         // Add menu
         MenuManager menuManager = new MenuManager();
-        Menu menu = menuManager.createContextMenu(tree);
 
         // Add
         final IAction addAction = new AddKeyAction(editor, treeViewer);
@@ -370,6 +366,19 @@ public class KeyTreeContributor implements IKeyTreeContributor {
         final IAction refactorAction = new RefactorKeyAction(editor, treeViewer);
         menuManager.add(refactorAction);
 
+        // Cut
+        final IAction cutAction = new CutKeyAction(editor, treeViewer);
+        menuManager.add(cutAction);
+
+        // Copy
+        final IAction copyAction = new CopyKeyAction(editor, treeViewer);
+        menuManager.add(copyAction);
+
+        
+        // Paste
+        final IAction pasteAction = new PasteKeyAction(editor, treeViewer);
+        menuManager.add(pasteAction);
+
         menuManager.update(true);
         menuManager.addMenuListener(new IMenuListener() {
 			
@@ -379,9 +388,10 @@ public class KeyTreeContributor implements IKeyTreeContributor {
 				IStructuredSelection selection = (IStructuredSelection) treeViewer
 		                .getSelection();
 		        KeyTreeNode node = (KeyTreeNode) selection.getFirstElement();
-				refactorAction.setEnabled(node.getChildren().length == 0);
+				refactorAction.setEnabled(node == null || node.getChildren().length == 0);
 			}
 		});
+        Menu menu = menuManager.createContextMenu(tree);
         tree.setMenu(menu);
 
         // Bind actions to tree

@@ -19,12 +19,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 
 /**
  * @author Pascal Essiembre
  * 
  */
-public class DeleteKeyAction extends AbstractTreeAction {
+public class DeleteKeyAction extends AbstractTreeAction implements IWorkbenchAction {
 
     /**
      * 
@@ -75,5 +76,11 @@ public class DeleteKeyAction extends AbstractTreeAction {
             }
         }
     }
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		System.out.println("Dispose");
+	}
 
 }
