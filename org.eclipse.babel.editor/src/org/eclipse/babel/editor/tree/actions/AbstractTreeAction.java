@@ -63,10 +63,7 @@ public abstract class AbstractTreeAction extends Action {
     	this.treeViewer.addSelectionChangedListener(this.selectionChangedListener);
     }
 
-    protected void selectionChanged(IStructuredSelection selection)
-    {
-    	System.out.println("Selection changed !");
-    }
+    protected void selectionChanged(IStructuredSelection selection) { }
     
     protected KeyTreeNode getNodeSelection() {
         IStructuredSelection selection = (IStructuredSelection) treeViewer

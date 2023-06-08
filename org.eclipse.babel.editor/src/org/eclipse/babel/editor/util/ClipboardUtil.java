@@ -3,6 +3,8 @@ package org.eclipse.babel.editor.util;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,12 +30,14 @@ import org.xml.sax.InputSource;
 /**
  * <resource-bundle>
  *    <message-key key="hello.label">
- *       <message locale="en_GB" value="Hello world!" comment="Mandatory phrase"/>
- *       <message locale="sv_SE" value="Hej vÃ¤rlden!"/>
+ *       <message locale="en_GB" value="Hello world!" comment="Common example phrase"/>
+ *       <message locale="sv_SE" value="Hej v&auml;rlden!"/>
  *    </message-key>
  * </resource-bundle>
  */
 public class ClipboardUtil {
+
+	private static final Logger LOGGER = Logger.getLogger(ClipboardUtil.class.getName());
 
 	
 	public static String serializeKeys(MessagesBundleGroup bundleGroup, String[] keys)
@@ -78,7 +82,7 @@ public class ClipboardUtil {
 			String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
 			return output;
 		} catch (Exception e) {
-
+			LOGGER.log(Level.SEVERE, "Error while serializing keys/messages to clipboard", e ); //$NON-NLS-1$
 		}
 
 		return null;
@@ -130,11 +134,10 @@ public class ClipboardUtil {
 			    	  currentMessage.setComment(comment);
 			    	  currentMessage.setText(value);
 			      }
-
 			  }
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Error while deserializing keys/messages to clipboard", e ); //$NON-NLS-1$
 		}
 	}
 
@@ -146,7 +149,7 @@ public class ClipboardUtil {
 
 		clipboard.dispose();
 	}
-	
+
 	public static String getFromClipboard(Display display)
 	{
 		Clipboard clipboard = new Clipboard(display);
@@ -154,9 +157,7 @@ public class ClipboardUtil {
 		String contents = (String) clipboard.getContents(TranslationTransfer.getInstance());
 
 		clipboard.dispose();
-		
+
 		return contents;
 	}
-
-	
 }

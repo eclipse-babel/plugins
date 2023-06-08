@@ -6,9 +6,11 @@ import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
 import org.eclipse.babel.core.message.tree.IKeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 public class CutKeyAction extends CopyKeyAction {
 
@@ -16,7 +18,12 @@ public class CutKeyAction extends CopyKeyAction {
 		super(editor, treeViewer);
 
 		setText(MessagesEditorPlugin.getString("key.cut")); //$NON-NLS-1$
-		setImageDescriptor(UIUtils.getImageDescriptor(UIUtils.IMAGE_ADD));
+
+		ImageDescriptor cutImageDescriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_CUT);
+		ImageDescriptor disabledCutImageDescriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED);
+
+		setImageDescriptor(cutImageDescriptor);
+		setDisabledImageDescriptor(disabledCutImageDescriptor);
 	}
 
 	@Override

@@ -35,6 +35,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -358,13 +359,13 @@ public class KeyTreeContributor implements IKeyTreeContributor {
         // Add
         final IAction addAction = new AddKeyAction(editor, treeViewer);
         menuManager.add(addAction);
-        // Delete
-        final IAction deleteAction = new DeleteKeyAction(editor, treeViewer);
-        menuManager.add(deleteAction);
-
+        
         // Refactor
         final IAction refactorAction = new RefactorKeyAction(editor, treeViewer);
         menuManager.add(refactorAction);
+
+        // Separator
+        menuManager.add(new Separator());
 
         // Cut
         final IAction cutAction = new CutKeyAction(editor, treeViewer);
@@ -378,6 +379,11 @@ public class KeyTreeContributor implements IKeyTreeContributor {
         // Paste
         final IAction pasteAction = new PasteKeyAction(editor, treeViewer);
         menuManager.add(pasteAction);
+
+        
+        // Delete
+        final IAction deleteAction = new DeleteKeyAction(editor, treeViewer);
+        menuManager.add(deleteAction);
 
         menuManager.update(true);
         menuManager.addMenuListener(new IMenuListener() {

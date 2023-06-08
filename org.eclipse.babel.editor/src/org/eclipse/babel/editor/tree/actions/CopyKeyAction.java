@@ -8,11 +8,12 @@ import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
 import org.eclipse.babel.editor.util.ClipboardUtil;
-import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 public class CopyKeyAction extends AbstractTreeAction {
 
@@ -20,7 +21,12 @@ public class CopyKeyAction extends AbstractTreeAction {
 		super(editor, treeViewer);
 
 		setText(MessagesEditorPlugin.getString("key.copy")); //$NON-NLS-1$
-		setImageDescriptor(UIUtils.getImageDescriptor(UIUtils.IMAGE_ADD));
+
+		ImageDescriptor copyImageDescriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_COPY);
+		ImageDescriptor disabledCopyImageDescriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED);
+
+		setImageDescriptor(copyImageDescriptor);
+		setDisabledImageDescriptor(disabledCopyImageDescriptor);
 	}
 
 	static protected List<IKeyTreeNode> getAllKeys(IKeyTreeNode keyTreeNode) {
