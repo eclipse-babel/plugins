@@ -36,7 +36,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.misc.StringMatcher;
+import org.eclipse.core.text.StringMatcher;
 
 /**
  * Messages Editor preferences.
