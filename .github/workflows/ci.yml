@@ -1,0 +1,47 @@
+/*******************************************************************************
+ * Copyright (c) 2023 Claes Rosell and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Claes Rosell - initial API and implementation
+ *******************************************************************************/
+name: CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v4.5
+      with:
+        maven-version: 3.8.5        
+    - name: Set up Maven 2
+      run: echo "MAVEN_OPTS='-Xmx2048m'" > ~/.mavenrc
+    - name: Build with Maven
+      run: mvn clean verify --no-transfer-progress
+    - name: Archive Babel Plugings Update Site
+      uses: actions/upload-artifact@v2
+      with: 
+        name: babel-update-site
+        path: org.eclipse.babel.repository/target/org.eclipse.babel.repository*.zip
