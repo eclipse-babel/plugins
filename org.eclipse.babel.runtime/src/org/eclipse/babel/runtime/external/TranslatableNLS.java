@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import org.eclipse.osgi.framework.debug.Debug;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.framework.log.FrameworkLogEntry;
 import org.osgi.framework.Bundle;
@@ -206,8 +205,6 @@ public abstract class TranslatableNLS {
 				// log it and continue. This means that the field will (most likely) be un-initialized and
 				// will fail later in the code and if so then we will see both the NPE and this error.
 				String value = "NLS missing message: " + field.getName() + " in: " + bundleName; //$NON-NLS-1$ //$NON-NLS-2$
-				if (Debug.DEBUG_MESSAGE_BUNDLES)
-					System.out.println(value);
 				log(SEVERITY_WARNING, value, null);
 				if (!isAccessible)
 					field.setAccessible(true);
@@ -263,8 +260,7 @@ public abstract class TranslatableNLS {
 		}
 
 		computeMissingMessages(bundleName, clazz, fields, fieldArray, isAccessible);
-		if (Debug.DEBUG_MESSAGE_BUNDLES)
-			System.out.println("Time to load message bundle: " + bundleName + " was " + (System.currentTimeMillis() - start) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		log(len, generalVariant, null);
 	}
 	
 	/*
@@ -334,8 +330,6 @@ public abstract class TranslatableNLS {
 				return null;
 			if (fieldObject == null) {
 				final String msg = "NLS unused message: " + key + " in: " + bundleName;//$NON-NLS-1$ //$NON-NLS-2$
-				if (Debug.DEBUG_MESSAGE_BUNDLES)
-					System.out.println(msg); 
 				log(SEVERITY_WARNING, msg, null);
 				return null;
 			}

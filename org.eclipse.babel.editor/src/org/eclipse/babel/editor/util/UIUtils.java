@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.misc.StringMatcher;
+import org.eclipse.core.text.StringMatcher;
 
 /**
  * Utility methods related to application UI.
