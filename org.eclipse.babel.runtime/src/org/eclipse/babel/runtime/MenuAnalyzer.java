@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -165,7 +166,7 @@ public class MenuAnalyzer {
 								
 								for (IConfigurationElement element2: element.getChildren()) {
 									if (element2 instanceof ConfigurationElementHandle) {
-										if (element2.toString().equals(id)) {
+										if (Objects.equals(element2.toString(), id)) {
 											commandId = element2.getAttribute("commandId");
 											String contributorName = element2.getDeclaringExtension().getContributor().getName();
 											bundle = InternalPlatform.getDefault().getBundle(contributorName);
@@ -179,10 +180,10 @@ public class MenuAnalyzer {
 						if (commandId == null) {
 						
 						outer: for (IConfigurationElement element: Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.ui.menus")) {
-							if (element.getName().equals("menuContribution")) {
+							if (Objects.equals(element.getName(), "menuContribution")) {
 								for (IConfigurationElement subElement1: element.getChildren("menu")) {
 									for (IConfigurationElement subElement: subElement1.getChildren("command")) {
-										if (subElement.getAttribute("id").equals(id)) {
+										if (Objects.equals(subElement.getAttribute("id"), id)) {
 											String contributorName = element.getDeclaringExtension().getContributor().getName();
 											bundle = InternalPlatform.getDefault().getBundle(contributorName);
 
@@ -310,7 +311,7 @@ public class MenuAnalyzer {
 
 		List<IViewDescriptor> actions = new ArrayList<IViewDescriptor>(viewIds.size());
 		for (String id : viewIds) {
-			if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
+			if (Objects.equals(id, IIntroConstants.INTRO_VIEW_ID)) {
 				continue;
 			}
 
@@ -409,7 +410,7 @@ public class MenuAnalyzer {
 
 	private ITranslatableText extractFromPluginXml(String extensionPointId, String elementName, String subElementName, String id, String labelAttributeName, boolean localMatchOnly) {
 		for (IConfigurationElement element: Platform.getExtensionRegistry().getConfigurationElementsFor(extensionPointId)) {
-			if (element.getName().equals(elementName)) {
+			if (Objects.equals(element.getName(), elementName)) {
 				for (IConfigurationElement subElement: element.getChildren(subElementName)) {
 					String thisId = subElement.getAttribute("id");
 					// FIXME: If there is no id then we need to do something more sophisticated to find the element
@@ -444,7 +445,7 @@ public class MenuAnalyzer {
 	private ITranslatableText extractFromPluginXml(String extensionPointId, String elementName, String id, String labelAttributeName, boolean localMatchOnly) {
 
 		for (IConfigurationElement element: Platform.getExtensionRegistry().getConfigurationElementsFor(extensionPointId)) {
-			if ((element.getName().equals(elementName))) {
+			if ((Objects.equals(element.getName(), elementName))) {
 				String thisId = element.getAttribute("id");
 				// FIXME: If there is no id then we need to do something more sophisticated to find the element
 				// from which this menu item came.  See bug 226380.  As an interim solution, we ignore if there
