@@ -59,6 +59,9 @@ public class SideNavTextBoxComposite extends Composite {
     public SideNavTextBoxComposite(Composite parent,
             final AbstractMessagesEditor editor) {
         super(parent, SWT.NONE);
+
+        this.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_CYAN));
+        
         this.editor = editor;
 
         GridLayout gridLayout = new GridLayout();
@@ -68,11 +71,7 @@ public class SideNavTextBoxComposite extends Composite {
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         setLayout(gridLayout);
-        GridData gridData = new GridData();
-        gridData.horizontalAlignment = GridData.FILL;
-        gridData.verticalAlignment = GridData.CENTER;
-        gridData.grabExcessHorizontalSpace = true;
-        setLayoutData(gridData);
+        GridData gridData = null;
 
         // Text box
         addTextBox = new Text(this, SWT.BORDER);

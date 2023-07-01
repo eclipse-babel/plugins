@@ -25,6 +25,7 @@ import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.babel.editor.tree.actions.AbstractRenameKeyAction;
 import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -34,11 +35,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Internationalization page where one can edit all resource bundle entries at
@@ -46,7 +51,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * 
  * @author Pascal Essiembre
  */
-public class I18NPage extends ScrolledComposite implements ISelectionProvider {
+public class I18NPage extends Composite implements ISelectionProvider {
 
     /** Minimum height of text fields. */
     private static final int TEXT_MIN_HEIGHT = 90;
@@ -63,6 +68,10 @@ public class I18NPage extends ScrolledComposite implements ISelectionProvider {
     // private final StackLayout layout = new StackLayout();
     private final SashForm sashForm;
 
+	private FormToolkit toolkit;
+
+	private Form form;
+
     /**
      * Constructor.
      * 
@@ -77,43 +86,23 @@ public class I18NPage extends ScrolledComposite implements ISelectionProvider {
             final AbstractMessagesEditor editor) {
         super(parent, style);
         this.editor = editor;
-        sashForm = new SashForm(this, SWT.SMOOTH);
-        sashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-        editor.getEditorSite().getPage().addPartListener(new IPartListener() {
-            public void partActivated(IWorkbenchPart part) {
-                if (part == editor) {
-                    sashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-                }
-            }
 
-            public void partDeactivated(IWorkbenchPart part) {
-                if (part == editor) {
-                    sashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+		this.form = this.toolkit.createForm(this);
+		toolkit.decorateFormHeading(this.form);
+		this.form.setText("Messages Editor");
+		Composite head = this.form.getHead();
+		IToolBarManager toolBarManager = this.form.getToolBarManager();
 
-                }
-            }
+		this.form.getBody().setLayout(new FillLayout());
 
-            public void partBroughtToTop(IWorkbenchPart part) {
-            }
-
-            public void partClosed(IWorkbenchPart part) {
-            }
-
-            public void partOpened(IWorkbenchPart part) {
-            }
-        });
-
-        setContent(sashForm);
+        sashForm = new SashForm(this.form.getBody(), SWT.NONE);
+        this.sashForm.setForeground(this.getDisplay().getSystemColor(SWT.COLOR_CYAN));
 
         keysComposite = new SideNavComposite(sashForm, editor);
 
         valuesComposite = createValuesComposite(sashForm);
 
         sashForm.setWeights(new int[] { 25, 75 });
-
-        setExpandHorizontal(true);
-        setExpandVertical(true);
-        setMinWidth(400);
 
         RBManager instance = RBManager.getInstance(editor.getBundleGroup()
                 .getProjectName());
@@ -175,12 +164,17 @@ public class I18NPage extends ScrolledComposite implements ISelectionProvider {
 
     private Composite createValuesComposite(SashForm parent) {
         final ScrolledComposite scrolledComposite = new ScrolledComposite(
-                parent, SWT.V_SCROLL | SWT.H_SCROLL);
+                parent, SWT.V_SCROLL);
+        
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
         scrolledComposite.setSize(SWT.DEFAULT, 100);
+        
+        scrolledComposite.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_YELLOW));
 
-        entriesComposite = new Composite(scrolledComposite, SWT.BORDER);
+        entriesComposite = new Composite(scrolledComposite, SWT.NONE);
+        entriesComposite.setBackground(parent.getBackground());
+        entriesComposite.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
         scrolledComposite.setContent(entriesComposite);
         scrolledComposite.setMinSize(entriesComposite.computeSize(SWT.DEFAULT,
                 editor.getBundleGroup().getLocales().length * TEXT_MIN_HEIGHT));
@@ -191,8 +185,14 @@ public class I18NPage extends ScrolledComposite implements ISelectionProvider {
         locales = UIUtils.filterLocales(locales);
         for (int i = 0; i < locales.length; i++) {
             Locale locale = locales[i];
-            addI18NEntry(locale);
+            AbstractI18NEntry i18NEntry = addI18NEntry(locale);
+            i18NEntry.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
+            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+            i18NEntry.setLayoutData(gridData);
+            
         }
+
+        entriesComposite.layout();
 
         editor.addChangeListener(new MessagesEditorChangeAdapter() {
             public void selectedKeyChanged(String oldKey, String newKey) {
@@ -205,7 +205,7 @@ public class I18NPage extends ScrolledComposite implements ISelectionProvider {
         return scrolledComposite;
     }
 
-    public void addI18NEntry(Locale locale) {
+    public AbstractI18NEntry addI18NEntry(Locale locale) {
         AbstractI18NEntry i18NEntry = null;
         try {
             Class<?> clazz = Class.forName(AbstractI18NEntry.INSTANCE_CLASS);
@@ -219,6 +219,8 @@ public class I18NPage extends ScrolledComposite implements ISelectionProvider {
         // entryComposite.addFocusListener(localBehaviour);
         entryComposites.put(locale, i18NEntry);
         entriesComposite.layout();
+        
+        return i18NEntry;
     }
 
     public void removeI18NEntry(Locale locale) {

@@ -39,12 +39,14 @@ public class KeyTreeVisibleAction extends Action {
     // constructor
     public void setEditor(AbstractMessagesEditor editor) {
         this.editor = editor;
+        if(this.editor != null) {
         editor.addChangeListener(new MessagesEditorChangeAdapter() {
             public void keyTreeVisibleChanged(boolean visible) {
                 setChecked(visible);
             }
         });
         setChecked(editor.getI18NPage().isKeyTreeVisible());
+        }
     }
 
     /*

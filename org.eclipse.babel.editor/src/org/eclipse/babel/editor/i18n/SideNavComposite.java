@@ -24,6 +24,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * Tree for displaying and navigating through resource bundle keys.
@@ -49,24 +51,30 @@ public class SideNavComposite extends Composite {
      */
     public SideNavComposite(Composite parent,
             final AbstractMessagesEditor editor) {
-        super(parent, SWT.BORDER);
+        super(parent, SWT.NONE);
         this.editor = editor;
-
+        setLayout(new GridLayout(1, true));
+        
+        FormToolkit toolKit = new FormToolkit(this.getDisplay());
+        Section messageKeySection = toolKit.createSection(this, Section.TITLE_BAR | Section.EXPANDED );
+        messageKeySection.setText("Message keys");
         // Create a toolbar.
         ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
-        ToolBar toolBar = toolBarMgr.createControl(this);
+        ToolBar toolBar = toolBarMgr.createControl(messageKeySection);
 
-        this.treeViewer = new TreeViewer(this, SWT.MULTI | SWT.BORDER
+        messageKeySection.setTextClient(toolBar);
+
+        messageKeySection.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
+        
+        this.treeViewer = new TreeViewer(messageKeySection, SWT.SINGLE | SWT.BORDER
                 | SWT.V_SCROLL | SWT.H_SCROLL);
 
-        setLayout(new GridLayout(1, false));
+        
+        // createTopSection();
+        createKeyTree();
+        
+        messageKeySection.setClient(this.treeViewer.getControl());
 
-        GridData gid;
-
-        gid = new GridData();
-        gid.horizontalAlignment = GridData.END;
-        gid.verticalAlignment = GridData.BEGINNING;
-        toolBar.setLayoutData(gid);
         toolBarMgr.add(new TreeModelAction(editor, treeViewer));
         toolBarMgr.add(new FlatModelAction(editor, treeViewer));
         toolBarMgr.add(new Separator());
@@ -77,10 +85,8 @@ public class SideNavComposite extends Composite {
         // TODO have two toolbars, one left-align, and one right, with drop
         // down menu
         // initListener();
-
-        // createTopSection();
-        createKeyTree();
         textBoxComp = new SideNavTextBoxComposite(this, editor);
+        textBoxComp.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
     }
 
     // private void initListener() {
@@ -118,16 +124,8 @@ public class SideNavComposite extends Composite {
      * Creates the middle (tree) section of this composite.
      */
     private void createKeyTree() {
-
-        GridData gridData = new GridData();
-        gridData.verticalAlignment = GridData.FILL;
-        gridData.grabExcessVerticalSpace = true;
-        gridData.horizontalAlignment = GridData.FILL;
-        gridData.grabExcessHorizontalSpace = true;
-
         KeyTreeContributor treeContributor = new KeyTreeContributor(editor);
         treeContributor.contribute(treeViewer);
-        treeViewer.getTree().setLayoutData(gridData);
 
     }
 
