@@ -168,6 +168,10 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
         setPageText(index, MessagesEditorPlugin.getString("editor.properties")); //$NON-NLS-1$
         setPageImage(index, BabelSharedImages.get(IBabelSharedImages.IMAGE_RESOURCE_BUNDLE));
 
+        FormI18nPage otherPage = new FormI18nPage(getContainer(), this);
+        index = addPage(otherPage);
+        setPageText(index, MessagesEditorPlugin.getString("editor.properties")); //$NON-NLS-1$
+ 
         // Create text editor pages for each locales
         Locale[] locales = messagesBundleGroup.getLocales();
         // first: sort the locales.
@@ -476,7 +480,12 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
         for (IMessagesEditorChangeListener listener : changeListeners) {
             listener.editorDisposed();
         }
-        i18nPage.dispose();
+
+        if(i18nPage != null) {
+        	this.i18nPage.dispose();
+        	this.i18nPage = null;
+        }
+
         for (ITextEditor textEditor : textEditorsIndex) {
             textEditor.dispose();
         }
