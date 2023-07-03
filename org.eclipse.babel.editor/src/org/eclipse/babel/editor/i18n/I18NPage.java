@@ -78,20 +78,17 @@ public class I18NPage extends ScrolledComposite implements ISelectionProvider {
         super(parent, style);
         this.editor = editor;
         sashForm = new SashForm(this, SWT.SMOOTH);
-        sashForm.setBackground(UIUtils
-                .getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
+        sashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
         editor.getEditorSite().getPage().addPartListener(new IPartListener() {
             public void partActivated(IWorkbenchPart part) {
                 if (part == editor) {
-                    sashForm.setBackground(UIUtils
-                            .getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
+                    sashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
                 }
             }
 
             public void partDeactivated(IWorkbenchPart part) {
                 if (part == editor) {
-                    sashForm.setBackground(UIUtils
-                            .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+                    sashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
                 }
             }

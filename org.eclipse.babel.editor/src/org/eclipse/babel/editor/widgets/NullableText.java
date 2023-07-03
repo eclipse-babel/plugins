@@ -14,7 +14,6 @@ package org.eclipse.babel.editor.widgets;
 import java.util.Locale;
 import java.util.Stack;
 
-import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.editor.widgets.suggestion.SuggestionBubble;
 import org.eclipse.babel.editor.widgets.suggestion.provider.SuggestionProviderUtils;
 import org.eclipse.swt.SWT;
@@ -75,7 +74,7 @@ public class NullableText extends Composite {
         text.setData("UNDO", new Stack<String>());
         text.setData("REDO", new Stack<String>());
         defaultColor = text.getBackground();
-        nullColor = UIUtils.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+        nullColor = getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 
         GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.horizontalSpacing = 0;
@@ -203,7 +202,7 @@ public class NullableText extends Composite {
             // t.printStackTrace();
             // }
         } else {
-            text.setBackground(UIUtils
+            text.setBackground(getDisplay()
                     .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
             // text.setBackgroundImage(null);
         }
@@ -214,7 +213,7 @@ public class NullableText extends Composite {
         if (isEnabled()) {
             text.setBackground(defaultColor);
         } else {
-            text.setBackground(UIUtils
+            text.setBackground(getDisplay()
                     .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         }
         // text.setBackgroundImage(null);
