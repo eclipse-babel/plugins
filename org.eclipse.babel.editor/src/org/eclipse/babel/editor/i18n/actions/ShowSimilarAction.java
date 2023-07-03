@@ -54,7 +54,7 @@ public class ShowSimilarAction extends Action {
         for (int i = 0; i < keys.length; i++) {
             String similarKey = keys[i];
             if (!key.equals(similarKey)) {
-                buf.append("    � ");
+                buf.append("    * ");
                 buf.append(similarKey);
                 buf.append(" (" + UIUtils.getDisplayName(locale) + ")");
                 buf.append("\n");
