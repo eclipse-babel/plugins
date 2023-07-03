@@ -58,12 +58,6 @@ public final class UIUtils {
     public static final String JDT_JAVA_NATURE = "org.eclipse.jdt.core.javanature"; //$NON-NLS-1$
 
     /**
-     * The root locale used for the original properties file. This constant is
-     * defined in java.util.Local starting with jdk6.
-     */
-    public static final Locale ROOT_LOCALE = new Locale(""); //$NON-NLS-1$
-
-    /**
      * Sort the Locales alphabetically. Make sure the root Locale is first.
      * 
      * @param locales
@@ -72,10 +66,10 @@ public final class UIUtils {
         List<Locale> localesList = new ArrayList<Locale>(Arrays.asList(locales));
         Comparator<Locale> comp = new Comparator<Locale>() {
             public int compare(Locale l1, Locale l2) {
-                if (ROOT_LOCALE.equals(l1)) {
+                if (Locale.ROOT.equals(l1)) {
                     return -1;
                 }
-                if (ROOT_LOCALE.equals(l2)) {
+                if (Locale.ROOT.equals(l2)) {
                     return 1;
                 }
                 String name1 = ""; //$NON-NLS-1$
@@ -102,7 +96,7 @@ public final class UIUtils {
      * @see MsgEditorPreferences#getFilterLocalesStringMatcher()
      */
     public static boolean isDisplayed(Locale locale) {
-        if (ROOT_LOCALE.equals(locale) || locale == null) {
+        if (Locale.ROOT.equals(locale) || locale == null) {
             return true;
         }
         StringMatcher[] patterns = MsgEditorPreferences.getInstance()
@@ -135,7 +129,7 @@ public final class UIUtils {
         ArrayList<Locale> result = new ArrayList<Locale>();
         for (int j = 0; j < locales.length; j++) {
             Locale loc = locales[j];
-            if (ROOT_LOCALE.equals(loc) || loc == null) {
+            if (Locale.ROOT.equals(loc) || loc == null) {
                 already.add(loc);
                 result.add(loc);
                 break;
@@ -352,7 +346,7 @@ public final class UIUtils {
      * @return display name
      */
     public static String getDisplayName(Locale locale) {
-        if (locale == null || ROOT_LOCALE.equals(locale)) {
+        if (locale == null || Locale.ROOT.equals(locale)) {
             return MessagesEditorPlugin
                     .getString("editor.i18nentry.rootlocale.label"); //$NON-NLS-1$
         }

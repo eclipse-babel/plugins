@@ -99,7 +99,7 @@ public class NLFragmentBundleGroupStrategy extends NLPluginBundleGroupStrategy {
         // if that is the case we don't try to load extra properties
         for (int i = 0; i < defaultFiles.length; i++) {
             MessagesBundle mb = defaultFiles[i];
-            if (UIUtils.ROOT_LOCALE.equals(mb.getLocale())
+            if (Locale.ROOT.equals(mb.getLocale())
                     || mb.getLocale() == null) {
                 // ... if this is the base one then no need to look any
                 // further.:
@@ -171,7 +171,7 @@ public class NLFragmentBundleGroupStrategy extends NLPluginBundleGroupStrategy {
                                 .getInstance();
                         return new MessagesBundle(
                                 new PropertiesReadOnlyResource(
-                                        UIUtils.ROOT_LOCALE,
+                                        Locale.ROOT,
                                         new PropertiesSerializer(prefs
                                                 .getSerializerConfig()),
                                         new PropertiesDeserializer(prefs
@@ -192,7 +192,7 @@ public class NLFragmentBundleGroupStrategy extends NLPluginBundleGroupStrategy {
                     MsgEditorPreferences prefs = MsgEditorPreferences
                             .getInstance();
                     return new MessagesBundle(new PropertiesIFileResource(
-                            UIUtils.ROOT_LOCALE, new PropertiesSerializer(
+                            Locale.ROOT, new PropertiesSerializer(
                                     prefs.getSerializerConfig()),
                             new PropertiesDeserializer(prefs
                                     .getDeserializerConfig()), file,
@@ -248,7 +248,7 @@ public class NLFragmentBundleGroupStrategy extends NLPluginBundleGroupStrategy {
                                 .getInstance();
                         return new MessagesBundle(
                                 new PropertiesReadOnlyResource(
-                                        UIUtils.ROOT_LOCALE,
+                                        Locale.ROOT,
                                         new PropertiesSerializer(prefs
                                                 .getSerializerConfig()),
                                         new PropertiesDeserializer(prefs
@@ -294,7 +294,7 @@ public class NLFragmentBundleGroupStrategy extends NLPluginBundleGroupStrategy {
             MsgEditorPreferences prefs = MsgEditorPreferences.getInstance();
 
             EclipsePropertiesEditorResource readOnly = new EclipsePropertiesEditorResource(
-                    UIUtils.ROOT_LOCALE, new PropertiesSerializer(
+                    Locale.ROOT, new PropertiesSerializer(
                             prefs.getSerializerConfig()),
                     new PropertiesDeserializer(prefs.getDeserializerConfig()),
                     textEditor);

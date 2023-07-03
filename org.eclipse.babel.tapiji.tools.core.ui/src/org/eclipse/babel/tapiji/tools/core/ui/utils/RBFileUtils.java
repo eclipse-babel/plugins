@@ -212,7 +212,7 @@ public class RBFileUtils extends Action {
                         localeTokens[2]);
                 break;
             default:
-                locale = new Locale("");
+                locale = Locale.ROOT;
                 break;
             }
         }
