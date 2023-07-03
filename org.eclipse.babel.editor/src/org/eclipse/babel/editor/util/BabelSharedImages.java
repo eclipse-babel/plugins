@@ -37,23 +37,20 @@ public class BabelSharedImages {
 		localRegistry.put(IBabelSharedImages.IMAGE_EMPTY, createImageDescriptor(IBabelSharedImages.IMAGE_EMPTY));
 		localRegistry.put(IBabelSharedImages.IMAGE_DUPLICATE, createImageDescriptor(IBabelSharedImages.IMAGE_DUPLICATE));
 
-		localRegistry.put(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION, createImageDescriptor(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION));
-//		localRegistry.put(IBabelSharedImages.IMAGE_UNUSED_AND_MISSING_TRANSLATIONS, createImageDescriptor(IBabelSharedImages.IMAGE_UNUSED_AND_MISSING_TRANSLATIONS));
+		localRegistry.put(IBabelSharedImages.IMAGE_BASE_UNUSED_TRANSLATION, createImageDescriptor(IBabelSharedImages.IMAGE_BASE_UNUSED_TRANSLATION));
 
-		localRegistry.put(IBabelSharedImages.IMAGE_REFACTORING, createImageDescriptor(IBabelSharedImages.IMAGE_REFACTORING));
-
-		localRegistry.put(IBabelSharedImages.IMAGE_ERROR, createImageDescriptor(IBabelSharedImages.IMAGE_ERROR));		/* TODO: This one is probably common to the IDE, no need to create our own. */
-		localRegistry.put(IBabelSharedImages.IMAGE_WARNING, createImageDescriptor(IBabelSharedImages.IMAGE_WARNING));		/* TODO: This one is probably common to the IDE, no need to create our own. */
+		localRegistry.put(IBabelSharedImages.IMAGE_ERROR, createImageDescriptor(IBabelSharedImages.IMAGE_ERROR));
+		localRegistry.put(IBabelSharedImages.IMAGE_WARNING, createImageDescriptor(IBabelSharedImages.IMAGE_WARNING));
 
 		localRegistry.put(IBabelSharedImages.IMAGE_WARNED_TRANSLATION, createWarnedTranslationImageDescriptor());
 		localRegistry.put(IBabelSharedImages.IMAGE_MISSING_TRANSLATION, createMissingTranslationImageDescriptor());
-//		localRegistry.put(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION, creteUnusedTranslationsImageDescriptor());
+		localRegistry.put(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION, creteUnusedTranslationsImageDescriptor());
 		localRegistry.put(IBabelSharedImages.IMAGE_UNUSED_AND_MISSING_TRANSLATIONS, createMissingAndUnusedTranslationsImageDescriptor());
-//		localRegistry.put(ISharedImages.IMAGE_DUPLICATE, createaDuplicateEntryAndUnusedImageDescriptor());
-		localRegistry.put(IBabelSharedImages.IMAGE_MISSING_TRANSLATION, createDuplicateEntryAndUnusedTranslationsImageDescriptor());
-		
+
 		localRegistry.put(IBabelSharedImages.IMAGE_MINUS, createImageDescriptor(IBabelSharedImages.IMAGE_MINUS));
 		localRegistry.put(IBabelSharedImages.IMAGE_PLUS, createImageDescriptor(IBabelSharedImages.IMAGE_PLUS));
+
+		localRegistry.put(IBabelSharedImages.IMAGE_SIMILAR, createImageDescriptor(IBabelSharedImages.IMAGE_SIMILAR));
 	}
 
 	private BabelSharedImages()
@@ -102,6 +99,11 @@ public class BabelSharedImages {
 		return descriptor;
 	}
 
+
+	public static void putDescriptor(String key, ImageDescriptor imageDescriptor) {
+		getImageRegistry().put(key, imageDescriptor);
+	}
+	
 	/**
 	 * Creates an ImageDescritor for the passed name by searching the icons folder for the image.
 	 * @param name
@@ -135,7 +137,7 @@ public class BabelSharedImages {
      * @return ImageDescriptor for the icon which indicates a key that is unused
      */
     public static ImageDescriptor creteUnusedTranslationsImageDescriptor() {
-        ImageDescriptor imageDescriptor = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION);
+        ImageDescriptor imageDescriptor = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_BASE_UNUSED_TRANSLATION);
         ImageDescriptor warning = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_WARNING);
         return new DecorationOverlayIcon(imageDescriptor, warning, IDecoration.BOTTOM_RIGHT);
     }
@@ -145,7 +147,7 @@ public class BabelSharedImages {
      *         translations and is unused
      */
     public static ImageDescriptor createMissingAndUnusedTranslationsImageDescriptor() {
-        ImageDescriptor imageDescriptor = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION);
+        ImageDescriptor imageDescriptor = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_BASE_UNUSED_TRANSLATION);
         ImageDescriptor missing = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_ERROR);
         return new DecorationOverlayIcon(imageDescriptor, missing, IDecoration.BOTTOM_RIGHT);
     }
@@ -165,7 +167,7 @@ public class BabelSharedImages {
      *         entries and is unused
      */
     public static ImageDescriptor createDuplicateEntryAndUnusedTranslationsImageDescriptor() {
-        ImageDescriptor imageDescriptor = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION);
+        ImageDescriptor imageDescriptor = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_BASE_UNUSED_TRANSLATION);
         ImageDescriptor duplicate = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_DUPLICATE);
         return new DecorationOverlayIcon(imageDescriptor, duplicate, IDecoration.BOTTOM_RIGHT);
     }
@@ -178,4 +180,5 @@ public class BabelSharedImages {
         ImageDescriptor warning = BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_WARNING);
         return new DecorationOverlayIcon(imageDescriptor, warning, IDecoration.BOTTOM_RIGHT);
 	}
+
 }

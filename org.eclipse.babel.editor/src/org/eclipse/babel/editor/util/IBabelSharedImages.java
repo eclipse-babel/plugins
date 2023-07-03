@@ -32,10 +32,10 @@ public interface IBabelSharedImages {
 	public static final String IMAGE_EMPTY = "empty.gif"; //$NON-NLS-1$
     public static final String IMAGE_DUPLICATE = "duplicate.gif"; //$NON-NLS-1$
 
-    public static final String IMAGE_UNUSED_TRANSLATION = "unused_translation.png"; //$NON-NLS-1$
+    public static final String IMAGE_BASE_UNUSED_TRANSLATION = "unused_translation.png"; //$NON-NLS-1$
+    public static final String IMAGE_UNUSED_TRANSLATION = "unused_translation"; //$NON-NLS-1$
     public static final String IMAGE_UNUSED_AND_MISSING_TRANSLATIONS = "unused_and_missing_translations.png"; //$NON-NLS-1$
     public static final String IMAGE_DUPLICATE_AND_UNUSED_TRANSLATION = "duplicate_and_unsed"; //$NON-NLS-1$
-
 
     public static final String IMAGE_WARNED_TRANSLATION = "warned_translation"; //$NON-NLS-1$
     public static final String IMAGE_MISSING_TRANSLATION = "missing_translation"; //$NON-NLS-1$
@@ -47,8 +47,4 @@ public interface IBabelSharedImages {
 
 	public static final String IMAGE_WARNING = "warning.gif"; //$NON-NLS-1$
     public static final String IMAGE_ERROR = "error_co.gif"; //$NON-NLS-1$
-
-
-
-
 }

@@ -14,7 +14,7 @@ import java.util.Locale;
 
 import org.eclipse.babel.editor.i18n.actions.FoldingAction;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
-import org.eclipse.babel.editor.util.LocalemageUtil;
+import org.eclipse.babel.editor.util.LocaleImageUtil;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.editor.widgets.ActionButton;
 import org.eclipse.jface.action.IAction;
@@ -82,7 +82,7 @@ public class EntryLeftBanner extends Composite {
 
         // TODO have "show country flags" in preferences.
         // TODO have text aligned bottom next to flag icon.
-        Image countryIcon = LocalemageUtil.getCountryIcon(i18NEntry.getLocale());
+        Image countryIcon = LocaleImageUtil.getCountryIcon(i18NEntry.getLocale());
         if (countryIcon != null) {
             Label imgLabel = new Label(this, SWT.NONE);
             imgLabel.setImage(countryIcon);
