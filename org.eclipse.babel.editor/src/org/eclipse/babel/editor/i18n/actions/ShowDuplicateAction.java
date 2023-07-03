@@ -12,6 +12,8 @@ package org.eclipse.babel.editor.i18n.actions;
 
 import java.util.Locale;
 
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -36,7 +38,7 @@ public class ShowDuplicateAction extends Action {
         this.key = key;
         this.locale = locale;
         setText("Show duplicate keys.");
-        setImageDescriptor(UIUtils.getImageDescriptor(UIUtils.IMAGE_DUPLICATE));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_DUPLICATE));
         setToolTipText("Check duplicate values");
     }
 
@@ -55,7 +57,7 @@ public class ShowDuplicateAction extends Action {
             for (int i = 0; i < keys.length; i++) {
                 String duplKey = keys[i];
                 if (!key.equals(duplKey)) {
-                    buf.append("    · ");
+                    buf.append("    ï¿½ ");
                     buf.append(duplKey);
                     buf.append(" (" + UIUtils.getDisplayName(locale) + ")");
                     buf.append("\n");

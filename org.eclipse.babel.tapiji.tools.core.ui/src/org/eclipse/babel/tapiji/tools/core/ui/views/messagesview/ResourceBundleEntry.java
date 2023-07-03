@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.babel.tapiji.tools.core.ui.views.messagesview;
 
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.tapiji.tools.core.ui.widgets.PropertyKeySelectionTree;
 import org.eclipse.jface.action.ContributionItem;
@@ -89,8 +91,7 @@ public class ResourceBundleEntry extends ContributionItem implements
             // MenuItem for refactoring the currently selected entry
             refactorItem = new MenuItem(menu, SWT.NONE, index + 2);
             refactorItem.setText("Rename ...");
-            refactorItem.setImage(UIUtils.getImageDescriptor(
-                    UIUtils.IMAGE_REFACTORING).createImage());
+            refactorItem.setImage(BabelSharedImages.get(IBabelSharedImages.IMAGE_REFACTORING));
             refactorItem.addSelectionListener(new SelectionListener() {
 
                 @Override

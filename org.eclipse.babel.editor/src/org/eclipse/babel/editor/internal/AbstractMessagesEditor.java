@@ -38,6 +38,8 @@ import org.eclipse.babel.editor.i18n.I18NPage;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
 import org.eclipse.babel.editor.preferences.MsgEditorPreferences;
 import org.eclipse.babel.editor.resource.EclipsePropertiesEditorResource;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.editor.views.MessagesBundleGroupOutline;
 import org.eclipse.core.resources.IFile;
@@ -138,7 +140,7 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
                     .addMessagesBundleGroupListener(getMsgBundleGroupListner());
             markers = new MessagesEditorMarkers(messagesBundleGroup);
             setPartName(messagesBundleGroup.getName());
-            setTitleImage(UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
+            setTitleImage(BabelSharedImages.get(IBabelSharedImages.IMAGE_RESOURCE_BUNDLE));
             closeIfAreadyOpen(site, file);
             super.init(site, editorInput);
             // TODO figure out model to use based on preferences
@@ -164,7 +166,7 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
         i18nPage = new I18NPage(getContainer(), SWT.NONE, this);
         int index = addPage(i18nPage);
         setPageText(index, MessagesEditorPlugin.getString("editor.properties")); //$NON-NLS-1$
-        setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
+        setPageImage(index, BabelSharedImages.get(IBabelSharedImages.IMAGE_RESOURCE_BUNDLE));
 
         // Create text editor pages for each locales
         Locale[] locales = messagesBundleGroup.getLocales();
@@ -190,7 +192,7 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
             int index = addPage(textEditor, textEditor.getEditorInput());
             setPageText(index,
                     UIUtils.getDisplayName(messagesBundle.getLocale()));
-            setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
+            setPageImage(index, BabelSharedImages.get(IBabelSharedImages.IMAGE_PROPERTIES_FILE));
             localesIndex.add(messagesBundle.getLocale());
             textEditorsIndex.add(textEditor);            
         } catch (PartInitException e) {
@@ -596,8 +598,7 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
     @Override
     public Image getTitleImage() {
         // create new image with current display
-        return UIUtils.getImageDescriptor(UIUtils.IMAGE_RESOURCE_BUNDLE)
-                .createImage();
+        return BabelSharedImages.get(IBabelSharedImages.IMAGE_RESOURCE_BUNDLE);
     }
 
     public void setTitleName(String name) {

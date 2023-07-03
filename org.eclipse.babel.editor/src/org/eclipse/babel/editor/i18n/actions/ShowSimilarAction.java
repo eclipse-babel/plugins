@@ -12,6 +12,8 @@ package org.eclipse.babel.editor.i18n.actions;
 
 import java.util.Locale;
 
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -36,7 +38,7 @@ public class ShowSimilarAction extends Action {
         this.key = key;
         this.locale = locale;
         setText("Show similar keys.");
-        setImageDescriptor(UIUtils.getImageDescriptor("similar.gif"));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_SIMILAR));
         setToolTipText("TODO put something here"); // TODO put tooltip
     }
 
@@ -52,7 +54,7 @@ public class ShowSimilarAction extends Action {
         for (int i = 0; i < keys.length; i++) {
             String similarKey = keys[i];
             if (!key.equals(similarKey)) {
-                buf.append("    · ");
+                buf.append("    ï¿½ ");
                 buf.append(similarKey);
                 buf.append(" (" + UIUtils.getDisplayName(locale) + ")");
                 buf.append("\n");

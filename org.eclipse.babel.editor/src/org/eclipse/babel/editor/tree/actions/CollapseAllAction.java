@@ -12,7 +12,8 @@ package org.eclipse.babel.editor.tree.actions;
 
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.viewers.TreeViewer;
 
 /**
@@ -29,8 +30,7 @@ public class CollapseAllAction extends AbstractTreeAction {
             TreeViewer treeViewer) {
         super(editor, treeViewer);
         setText(MessagesEditorPlugin.getString("key.collapseAll")); //$NON-NLS-1$
-        setImageDescriptor(UIUtils
-                .getImageDescriptor(UIUtils.IMAGE_COLLAPSE_ALL));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_COLLAPSE_ALL));
         setToolTipText("Collapse all"); // TODO put tooltip
     }
 

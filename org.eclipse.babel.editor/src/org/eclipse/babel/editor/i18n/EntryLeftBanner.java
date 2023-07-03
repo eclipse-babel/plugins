@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import org.eclipse.babel.editor.i18n.actions.FoldingAction;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
+import org.eclipse.babel.editor.util.LocalemageUtil;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.editor.widgets.ActionButton;
 import org.eclipse.jface.action.IAction;
@@ -81,35 +82,10 @@ public class EntryLeftBanner extends Composite {
 
         // TODO have "show country flags" in preferences.
         // TODO have text aligned bottom next to flag icon.
-        Image countryIcon = loadCountryIcon(i18NEntry.getLocale());
+        Image countryIcon = LocalemageUtil.getCountryIcon(i18NEntry.getLocale());
         if (countryIcon != null) {
             Label imgLabel = new Label(this, SWT.NONE);
             imgLabel.setImage(countryIcon);
         }
     }
-
-    /**
-     * Loads country icon based on locale country.
-     * 
-     * @param countryLocale
-     *            the locale on which to grab the country
-     * @return an image, or <code>null</code> if no match could be made
-     */
-    private Image loadCountryIcon(Locale countryLocale) {
-        Image image = null;
-        String countryCode = null;
-        if (countryLocale != null && countryLocale.getCountry() != null) {
-            countryCode = countryLocale.getCountry().toLowerCase();
-        }
-        if (countryCode != null && countryCode.length() > 0) {
-            String imageName = "countries/" + //$NON-NLS-1$
-                    countryCode.toLowerCase() + ".gif"; //$NON-NLS-1$
-            image = UIUtils.getImage(imageName);
-        }
-        // if (image == null) {
-        //            image = UIUtils.getImage("countries/blank.gif"); //$NON-NLS-1$
-        // }
-        return image;
-    }
-
 }

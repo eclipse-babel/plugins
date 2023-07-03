@@ -14,7 +14,8 @@ import org.eclipse.babel.core.message.tree.TreeType;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
 import org.eclipse.babel.editor.tree.internal.KeyTreeContentProvider;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.TreeViewer;
 
@@ -31,8 +32,7 @@ public class TreeModelAction extends AbstractTreeAction {
     public TreeModelAction(AbstractMessagesEditor editor, TreeViewer treeViewer) {
         super(editor, treeViewer, IAction.AS_RADIO_BUTTON);
         setText(MessagesEditorPlugin.getString("key.layout.tree")); //$NON-NLS-1$
-        setImageDescriptor(UIUtils
-                .getImageDescriptor(UIUtils.IMAGE_LAYOUT_HIERARCHICAL));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_LAYOUT_HIERARCHICAL));
         setToolTipText("Display as in a Tree"); // TODO put tooltip
         setChecked(true);
     }
