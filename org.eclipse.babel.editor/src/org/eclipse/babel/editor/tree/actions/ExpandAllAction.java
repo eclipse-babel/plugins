@@ -12,7 +12,8 @@ package org.eclipse.babel.editor.tree.actions;
 
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.viewers.TreeViewer;
 
 /**
@@ -28,7 +29,7 @@ public class ExpandAllAction extends AbstractTreeAction {
     public ExpandAllAction(AbstractMessagesEditor editor, TreeViewer treeViewer) {
         super(editor, treeViewer);
         setText(MessagesEditorPlugin.getString("key.expandAll")); //$NON-NLS-1$
-        setImageDescriptor(UIUtils.getImageDescriptor(UIUtils.IMAGE_EXPAND_ALL));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_EXPAND_ALL));
         setToolTipText("Expand All"); // TODO put tooltip
     }
 

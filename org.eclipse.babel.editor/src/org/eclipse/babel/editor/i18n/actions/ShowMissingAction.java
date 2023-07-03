@@ -12,7 +12,8 @@ package org.eclipse.babel.editor.i18n.actions;
 
 import java.util.Locale;
 
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -29,7 +30,7 @@ public class ShowMissingAction extends Action {
     public ShowMissingAction(String key, Locale locale) {
         super();
         setText("Key missing a value.");
-        setImageDescriptor(UIUtils.getImageDescriptor("empty.gif"));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_EMPTY));
         setToolTipText("TODO put something here"); // TODO put tooltip
     }
 

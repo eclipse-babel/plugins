@@ -14,11 +14,11 @@ import org.eclipse.babel.editor.IMessagesEditorChangeListener;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.babel.editor.internal.MessagesEditorContributor;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * 
@@ -79,24 +79,21 @@ public class FilterKeysAction extends Action {
         }
         setText(getTextInternal());
         setToolTipText(getTooltipInternal());
-        setImageDescriptor(ImageDescriptor.createFromImage(getImage()));
+        setImageDescriptor(getImageDescriptor());
 
     }
 
-    public Image getImage() {
+    public ImageDescriptor getImageDescriptor() {
         switch (flagToSet) {
         case IMessagesEditorChangeListener.SHOW_ONLY_MISSING:
-            // return UIUtils.IMAGE_MISSING_TRANSLATION;
-            return UIUtils.getMissingTranslationImage();
+            return BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_MISSING_TRANSLATION);
         case IMessagesEditorChangeListener.SHOW_ONLY_MISSING_AND_UNUSED:
-            // return UIUtils.IMAGE_UNUSED_AND_MISSING_TRANSLATIONS;
-            return UIUtils.getMissingAndUnusedTranslationsImage();
+            return BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_UNUSED_AND_MISSING_TRANSLATIONS);
         case IMessagesEditorChangeListener.SHOW_ONLY_UNUSED:
-            // return UIUtils.IMAGE_UNUSED_TRANSLATION;
-            return UIUtils.getUnusedTranslationsImage();
+            return BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION);
         case IMessagesEditorChangeListener.SHOW_ALL:
         default:
-            return UIUtils.getImage(UIUtils.IMAGE_KEY);
+            return BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_KEY);
         }
     }
 

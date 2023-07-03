@@ -15,7 +15,8 @@ import java.util.Locale;
 
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.babel.editor.widgets.LocaleSelector;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
@@ -37,8 +38,7 @@ public class NewLocaleAction extends Action {
     public NewLocaleAction() {
         super("New &Locale...");
         setToolTipText("Add a new locale to the resource bundle.");
-        setImageDescriptor(UIUtils
-                .getImageDescriptor(UIUtils.IMAGE_NEW_PROPERTIES_FILE));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_NEW_PROPERTIES_FILE));
     }
 
     // TODO RBEditor hold such an action registry. Then move this method to

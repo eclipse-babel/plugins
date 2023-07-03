@@ -11,6 +11,7 @@
 package org.eclipse.babel.tapiji.tools.core.ui.views.messagesview;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -277,14 +278,21 @@ public class MessagesView extends ViewPart implements
 
     /*** ACTIONS ***/
     private void makeVisibleLocalesActions() {
-        if (viewState.getSelectedProjectName() == null) {
+        String selectedProjectName = viewState.getSelectedProjectName();
+        
+        
+    	if (selectedProjectName == null) {
             return;
         }
 
-        visibleLocaleActions = new ArrayList<Action>();
-        Set<Locale> locales = ResourceBundleManager.getManager(
-                viewState.getSelectedProjectName()).getProvidedLocales(
-                viewState.getSelectedBundleId());
+        this.visibleLocaleActions = new ArrayList<>();
+
+		ResourceBundleManager projectResourceBundleManager = ResourceBundleManager.getManager(selectedProjectName);
+		Set<Locale> locales = new HashSet<>();
+		if (projectResourceBundleManager != null) {
+			locales.addAll(projectResourceBundleManager.getProvidedLocales(viewState.getSelectedBundleId()));
+		}
+
         List<Locale> visibleLocales = treeViewer.getVisibleLocales();
         for (final Locale locale : locales) {
             Action langAction = new Action() {

@@ -14,7 +14,8 @@ import org.eclipse.babel.core.message.tree.TreeType;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
 import org.eclipse.babel.editor.tree.internal.KeyTreeContentProvider;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.TreeViewer;
 
@@ -31,10 +32,8 @@ public class FlatModelAction extends AbstractTreeAction {
     public FlatModelAction(AbstractMessagesEditor editor, TreeViewer treeViewer) {
         super(editor, treeViewer, IAction.AS_RADIO_BUTTON);
         setText(MessagesEditorPlugin.getString("key.layout.flat")); //$NON-NLS-1$
-        setImageDescriptor(UIUtils
-                .getImageDescriptor(UIUtils.IMAGE_LAYOUT_FLAT));
-        setDisabledImageDescriptor(UIUtils
-                .getImageDescriptor(UIUtils.IMAGE_LAYOUT_FLAT));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_LAYOUT_FLAT));
+        setDisabledImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_LAYOUT_FLAT));
         setToolTipText("Display in a list"); // TODO put tooltip
     }
 

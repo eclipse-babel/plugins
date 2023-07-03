@@ -12,7 +12,8 @@ package org.eclipse.babel.editor.actions;
 
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 
@@ -31,7 +32,7 @@ public class KeyTreeVisibleAction extends Action {
         super("Show/Hide Key Tree", IAction.AS_CHECK_BOX);
         // setText();
         setToolTipText("Show/hide the key tree");
-        setImageDescriptor(UIUtils.getImageDescriptor(UIUtils.IMAGE_VIEW_LEFT));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_VIEW_LEFT));
     }
 
     // TODO RBEditor hold such an action registry. Then move this method to

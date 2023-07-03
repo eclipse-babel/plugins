@@ -14,7 +14,8 @@ import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -32,7 +33,7 @@ public class AddKeyAction extends AbstractTreeAction {
     public AddKeyAction(AbstractMessagesEditor editor, TreeViewer treeViewer) {
         super(editor, treeViewer);
         setText(MessagesEditorPlugin.getString("key.add") + " ..."); //$NON-NLS-1$
-        setImageDescriptor(UIUtils.getImageDescriptor(UIUtils.IMAGE_ADD));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_ADD));
         setToolTipText("TODO put something here"); // TODO put tooltip
     }
 

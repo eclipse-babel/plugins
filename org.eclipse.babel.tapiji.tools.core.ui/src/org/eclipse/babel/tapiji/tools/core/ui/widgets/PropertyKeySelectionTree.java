@@ -138,10 +138,12 @@ public class PropertyKeySelectionTree extends Composite implements
         this.projectName = projectName;
 
         if (resourceBundle != null && resourceBundle.trim().length() > 0) {
-            if (locales == null)
+            if (locales == null) {
                 initVisibleLocales();
-            else
+            }
+            else {
                 this.visibleLocales = locales;
+            }
         }
 
         constructWidget();
@@ -232,9 +234,7 @@ public class PropertyKeySelectionTree extends Composite implements
                 if (a == b) {
                     return true;
                 }
-                if (a instanceof IKeyTreeNode && b instanceof IKeyTreeNode) {
-                    IKeyTreeNode nodeA = (IKeyTreeNode) a;
-                    IKeyTreeNode nodeB = (IKeyTreeNode) b;
+                if (a instanceof IKeyTreeNode nodeA  && b instanceof IKeyTreeNode nodeB) {
                     return nodeA.equals(nodeB);
                 }
                 return false;
