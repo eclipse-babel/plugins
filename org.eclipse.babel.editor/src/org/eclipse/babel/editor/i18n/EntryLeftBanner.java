@@ -18,6 +18,7 @@ import org.eclipse.babel.editor.util.LocaleImageUtil;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.editor.widgets.ActionButton;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -59,8 +60,7 @@ public class EntryLeftBanner extends Composite {
         // commentButton.setImage(UIUtils.getImage("comment.gif"));
 
         Link localeLabel = new Link(this, SWT.NONE);
-        localeLabel.setFont(UIUtils.createFont(localeLabel, SWT.BOLD));
-
+        localeLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
         boolean isEditable = i18NEntry.isEditable();
         localeLabel.setText("<a>"
                 + UIUtils.getDisplayName(i18NEntry.getLocale())

@@ -77,12 +77,7 @@ public class BabelSharedImages {
 	 * @return the image managed under the given key
 	 */
 	public static Image get(String key) {
-		Image image = getImageRegistry().get(key);
-		if ( image == null ) {
-			new Exception().printStackTrace();
-		}
-
-		return image;
+		return getImageRegistry().get(key);
 	}
 
 	/**
@@ -92,11 +87,7 @@ public class BabelSharedImages {
 	 * @return the image descriptor for the given key
 	 */
 	public static ImageDescriptor getDescriptor(String key) {
-		ImageDescriptor descriptor = getImageRegistry().getDescriptor(key);
-		if ( descriptor == null ) {
-			new Exception().printStackTrace();
-		}
-		return descriptor;
+		return getImageRegistry().getDescriptor(key);
 	}
 
 
