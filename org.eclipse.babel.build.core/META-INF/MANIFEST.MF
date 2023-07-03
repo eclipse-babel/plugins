@@ -10,3 +10,4 @@ Export-Package: org.eclipse.babel.build.core,
  org.eclipse.babel.build.core.exceptions,
  org.eclipse.babel.build.core.languagepack,
  org.eclipse.babel.build.core.translationcatalogue
+Automatic-Module-Name: org.eclipse.babel.build.core

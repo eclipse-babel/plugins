@@ -30,23 +30,9 @@ Contributors:
   </prerequisites>
 
   <properties>
-    <tycho-version>0.16.0</tycho-version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <tycho-version>3.0.4</tycho-version>
   </properties>
-  <repositories>
-    <!-- configure p2 repository to resolve against -->
-    <repository>
-      <id>indigo</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/indigo</url>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>maven.eclipse.org</id>
-      <url>https://repo.eclipse.org/service/local/repositories/cbi-releases/content</url>
-    </pluginRepository>
-  </pluginRepositories>
 
   <build>
     <plugins>

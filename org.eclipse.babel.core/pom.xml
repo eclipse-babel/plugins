@@ -26,10 +26,6 @@ Contributors: Martin Reiterer - setup of tycho build for babel tools
     <relativePath>..</relativePath>
   </parent>
   
-  <properties>
-    <tycho-version>0.16.0</tycho-version>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -41,13 +37,4 @@ Contributors: Martin Reiterer - setup of tycho build for babel tools
       </plugin>
     </plugins>
   </build>
-  
-  <repositories>
-    <!-- configure p2 repository to resolve against -->
-    <repository>
-      <id>indigo</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/indigo/</url>
-    </repository>
-  </repositories>
 </project>

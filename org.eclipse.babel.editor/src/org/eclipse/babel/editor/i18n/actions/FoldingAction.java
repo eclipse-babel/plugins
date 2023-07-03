@@ -11,7 +11,8 @@
 package org.eclipse.babel.editor.i18n.actions;
 
 import org.eclipse.babel.editor.i18n.AbstractI18NEntry;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.action.Action;
 
 /**
@@ -31,7 +32,7 @@ public class FoldingAction extends Action {
         this.i18NEntry = i18NEntry;
         this.expanded = i18NEntry.getExpanded();
         setText("Collapse");
-        setImageDescriptor(UIUtils.getImageDescriptor("minus.gif"));
+        setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_MINUS));
         setToolTipText("TODO put something here"); // TODO put tooltip
     }
 
@@ -42,10 +43,10 @@ public class FoldingAction extends Action {
      */
     public void run() {
         if (i18NEntry.getExpanded()) {
-            setImageDescriptor(UIUtils.getImageDescriptor("plus.gif"));
+            setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_PLUS));
             i18NEntry.setExpanded(false);
         } else {
-            setImageDescriptor(UIUtils.getImageDescriptor("minus.gif"));
+            setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_MINUS));
             i18NEntry.setExpanded(true);
         }
     }

@@ -2,5 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Babel Nls Fragment
 Bundle-SymbolicName: org.eclipse.babel.editor.nls
+Bundle-Vendor: Eclipse.org
 Bundle-Version: 0.9.1.qualifier
 Fragment-Host: org.eclipse.babel.editor;bundle-version="[0.8,1.0)"
+Automatic-Module-Name: org.eclipse.babel.editor.nls

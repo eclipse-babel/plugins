@@ -11,7 +11,8 @@
 package org.eclipse.babel.tapiji.tools.java.ui.autocompletion;
 
 import org.eclipse.babel.core.message.manager.RBManager;
-import org.eclipse.babel.editor.util.UIUtils;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.jface.text.IDocument;
@@ -124,8 +125,7 @@ public class KeyRefactoringProposal implements IJavaCompletionProposal {
      */
     @Override
     public Image getImage() {
-    	return UIUtils.getImageDescriptor(UIUtils.IMAGE_REFACTORING)
-                .createImage();
+    	return BabelSharedImages.get(IBabelSharedImages.IMAGE_REFACTORING);
     }
 
     /**

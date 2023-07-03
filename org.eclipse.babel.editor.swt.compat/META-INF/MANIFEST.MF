@@ -2,12 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RCP Compatibility for Babel Editor
 Bundle-SymbolicName: org.eclipse.babel.editor.swt.compat
+Bundle-Vendor: Eclipse.org
 Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.eclipse.babel.editor.swt.compat.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: org.eclipse.swt,
  org.eclipse.swt.widgets,
  org.eclipse.ui.forms,
  org.eclipse.ui.forms.widgets,
  org.osgi.framework;version="1.3.0"
 Export-Package: org.eclipse.babel.editor.compat
+Automatic-Module-Name: org.eclipse.babel.editor.swt.compat

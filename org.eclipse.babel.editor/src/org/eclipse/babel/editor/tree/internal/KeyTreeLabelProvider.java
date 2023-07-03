@@ -19,14 +19,12 @@ import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorMarkers;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.babel.editor.util.OverlayImageIcon;
-import org.eclipse.babel.editor.util.UIUtils;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.graphics.Color;
@@ -48,7 +46,8 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
     private static final int BADGE_WARNING_GREY = 1 << 5;
 
     /** Registry instead of UIUtils one for image not keyed by file name. */
-    private static ImageRegistry imageRegistry = new ImageRegistry();
+    private ImageRegistry imageRegistry = new ImageRegistry();
+
 
     private AbstractMessagesEditor editor;
     private MessagesBundleGroup messagesBundleGroup;
@@ -79,40 +78,34 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
     /**
      * @see ILabelProvider#getImage(Object)
      */
+    @Override
     public Image getImage(Object element) {
-        if (element instanceof KeyTreeNode) {
-            KeyTreeNode node = (KeyTreeNode) element;
+        if (element instanceof KeyTreeNode node) {
             Collection<IMessageCheck> c = editor.getMarkers().getFailedChecks(
                     node.getMessageKey());
             if (c == null || c.isEmpty()) {
                 // Return the default key image as no issue exists
-                return UIUtils.getKeyImage();
+            	return BabelSharedImages.get(IBabelSharedImages.IMAGE_KEY);
             }
             if (editor.getMarkers().isUnusedKey(node.getMessageKey(), false)) {
                 if (editor.getMarkers().isMissingKey(node.getMessageKey())) {
-                    return UIUtils.getMissingAndUnusedTranslationsImage();
+                	return BabelSharedImages.get(IBabelSharedImages.IMAGE_UNUSED_AND_MISSING_TRANSLATIONS);
                 } else if (editor.getMarkers().isDuplicateValue(
                         node.getMessageKey())) {
-                    return UIUtils
-                            .getDuplicateEntryAndUnusedTranslationsImage();
+                    return BabelSharedImages.get(IBabelSharedImages.IMAGE_DUPLICATE_AND_UNUSED_TRANSLATION); 
                 }
-                return UIUtils.getUnusedTranslationsImage();
+                return BabelSharedImages.get(IBabelSharedImages.IMAGE_UNUSED_TRANSLATION);
             } else if (editor.getMarkers().isMissingKey(node.getMessageKey())) {
-                return UIUtils.getMissingTranslationImage();
+                return BabelSharedImages.get(IBabelSharedImages.IMAGE_MISSING_TRANSLATION);
             } else if (editor.getMarkers().isDuplicateValue(
                     node.getMessageKey())) {
-                return UIUtils.getDuplicateEntryImage();
+                return BabelSharedImages.get(IBabelSharedImages.IMAGE_DUPLICATE);
             }
 
-            // This shouldnt happen, but just in case a default key with a
+            // This shouldn't happen, but just in case a default key with a
             // warning icon will be showed
-            Image someWarning = UIUtils.getKeyImage();
-            ImageDescriptor warning = ImageDescriptor.createFromImage(UIUtils
-                    .getImage(UIUtils.IMAGE_WARNING));
-            someWarning = new DecorationOverlayIcon(someWarning, warning,
-                    IDecoration.BOTTOM_RIGHT).createImage();
-            return someWarning;
-            // return UIUtils.getImage(UIUtils.IMAGE_WARNED_TRANSLATION);
+            return BabelSharedImages.get(IBabelSharedImages.IMAGE_WARNED_TRANSLATION);
+
         } else {
             /*
              * // Figure out background icon if
@@ -124,7 +117,7 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
              * // } } else { iconFlags += KEY_VIRTUAL; }
              */
 
-            return UIUtils.getKeyImage();
+        	return BabelSharedImages.get(IBabelSharedImages.IMAGE_KEY);
 
         }
     }
@@ -132,6 +125,7 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
     /**
      * @see ILabelProvider#getText(Object)
      */
+    @Override
     public String getText(Object element) {
         /*
          * We look to the content provider to see if the node is being displayed
@@ -150,8 +144,7 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
     }
 
     public String getToolTipText(Object element) {
-        if (element instanceof KeyTreeNode) {
-            KeyTreeNode node = (KeyTreeNode) element;
+        if (element instanceof KeyTreeNode node) {
             Collection<IMessageCheck> c = editor.getMarkers().getFailedChecks(
                     node.getMessageKey());
             if (c == null || c.isEmpty()) {
@@ -177,8 +170,9 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
     /**
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
      */
+    @Override
     public void dispose() {
-        // TODO imageRegistry.dispose(); could do if version 3.1
+        this.imageRegistry.dispose();
     }
 
     /**
@@ -252,7 +246,7 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
     private Image getRegistryImage(String imageName) {
         Image image = imageRegistry.get(imageName);
         if (image == null) {
-            image = UIUtils.getImageDescriptor(imageName).createImage();
+            image = BabelSharedImages.getDescriptor(imageName).createImage();
             imageRegistry.put(imageName, image);
         }
         return image;
