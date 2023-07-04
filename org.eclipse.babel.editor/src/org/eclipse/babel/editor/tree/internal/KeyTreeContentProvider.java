@@ -45,16 +45,21 @@ public class KeyTreeContentProvider implements ITreeContentProvider {
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
      */
     public Object[] getChildren(Object parentElement) {
-        KeyTreeNode parentNode = (KeyTreeNode) parentElement;
-        switch (treeType) {
-        case Tree:
-            return keyTreeModel.getChildren(parentNode);
-        case Flat:
-            return new KeyTreeNode[0];
-        default:
-            // Should not happen
-            return new KeyTreeNode[0];
-        }
+    	if(parentElement instanceof KeyTreeNode) {
+            KeyTreeNode parentNode = (KeyTreeNode) parentElement;
+            switch (treeType) {
+            case Tree:
+                return keyTreeModel.getChildren(parentNode);
+            case Flat:
+                return new KeyTreeNode[0];
+            default:
+                // Should not happen
+                return new KeyTreeNode[0];
+            }
+    	}
+
+    	/* Sometimes parentElement is an "ContributionInfo" and we end up in here. Return no children */
+        return new KeyTreeNode[0];
     }
 
     /**
@@ -81,7 +86,14 @@ public class KeyTreeContentProvider implements ITreeContentProvider {
     public boolean hasChildren(Object element) {
         switch (treeType) {
         case Tree:
-            return keyTreeModel.getChildren((KeyTreeNode) element).length > 0;
+        	int childrenCount = 0;
+        	if(keyTreeModel != null) {
+        		IKeyTreeNode[] children = keyTreeModel.getChildren((KeyTreeNode) element);
+        		if(children != null) {
+        			childrenCount = children.length;
+        		}
+        	}
+            return childrenCount > 0;
         case Flat:
             return false;
         default:

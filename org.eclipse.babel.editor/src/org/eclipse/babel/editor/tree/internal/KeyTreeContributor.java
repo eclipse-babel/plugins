@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.tree.internal;
 
-import java.lang.reflect.Constructor;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -22,24 +21,27 @@ import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
 import org.eclipse.babel.core.message.tree.internal.IKeyTreeModelListener;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
-import org.eclipse.babel.editor.builder.Builder;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.babel.editor.internal.MessagesEditorMarkers;
 import org.eclipse.babel.editor.tree.IKeyTreeContributor;
-import org.eclipse.babel.editor.tree.actions.AbstractRenameKeyAction;
 import org.eclipse.babel.editor.tree.actions.AddKeyAction;
+import org.eclipse.babel.editor.tree.actions.CopyKeyAction;
+import org.eclipse.babel.editor.tree.actions.CutKeyAction;
 import org.eclipse.babel.editor.tree.actions.DeleteKeyAction;
+import org.eclipse.babel.editor.tree.actions.PasteKeyAction;
 import org.eclipse.babel.editor.tree.actions.RefactorKeyAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -50,13 +52,9 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Pascal Essiembre
@@ -189,7 +187,9 @@ public class KeyTreeContributor implements IKeyTreeContributor {
                 if (display.equals(Display.getCurrent())) {
                     display.asyncExec(new Runnable() {
                     public void run() {
-                        treeViewer.refresh();
+                    	if(treeViewer.getControl().isDisposed() == false) {
+                    		treeViewer.refresh();
+                    	}
                     }
                 });
             }
@@ -308,21 +308,27 @@ public class KeyTreeContributor implements IKeyTreeContributor {
      */
     private void contributeKeySync(final TreeViewer treeViewer) {
         // changes in tree selected key update the editor
-        treeViewer.getTree().addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                IStructuredSelection selection = (IStructuredSelection) treeViewer
-                        .getSelection();
-                if (selection != null && selection.getFirstElement() != null) {
-                    KeyTreeNode node = (KeyTreeNode) selection
-                            .getFirstElement();
-                    LOGGER.log(Level.INFO, "viewer key/hash:"
-                            + node.getMessageKey() + "/" + node.hashCode());
-                    editor.setSelectedKey(node.getMessageKey());
-                } else {
-                    editor.setSelectedKey(null);
+    	treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+
+                String selectedMessageKey = null;
+                if (selection != null ) {
+                	if ( selection.size() == 1) {
+                        KeyTreeNode node = (KeyTreeNode) selection
+                                .getFirstElement();
+                        LOGGER.log(Level.INFO, "viewer key/hash:"
+                                + node.getMessageKey() + "/" + node.hashCode());
+                        selectedMessageKey = node.getMessageKey();
+                	}
                 }
-            }
-        });
+
+                editor.setSelectedKey(selectedMessageKey);
+				
+			}
+		});
         // changes in editor selected key updates the tree
         editor.addChangeListener(new MessagesEditorChangeAdapter() {
             public void selectedKeyChanged(String oldKey, String newKey) {
@@ -357,18 +363,35 @@ public class KeyTreeContributor implements IKeyTreeContributor {
 
         // Add menu
         MenuManager menuManager = new MenuManager();
-        Menu menu = menuManager.createContextMenu(tree);
 
         // Add
         final IAction addAction = new AddKeyAction(editor, treeViewer);
         menuManager.add(addAction);
-        // Delete
-        final IAction deleteAction = new DeleteKeyAction(editor, treeViewer);
-        menuManager.add(deleteAction);
-
+        
         // Refactor
         final IAction refactorAction = new RefactorKeyAction(editor, treeViewer);
         menuManager.add(refactorAction);
+
+        // Separator
+        menuManager.add(new Separator());
+
+        // Cut
+        final IAction cutAction = new CutKeyAction(editor, treeViewer);
+        menuManager.add(cutAction);
+
+        // Copy
+        final IAction copyAction = new CopyKeyAction(editor, treeViewer);
+        menuManager.add(copyAction);
+
+        
+        // Paste
+        final IAction pasteAction = new PasteKeyAction(editor, treeViewer);
+        menuManager.add(pasteAction);
+
+        
+        // Delete
+        final IAction deleteAction = new DeleteKeyAction(editor, treeViewer);
+        menuManager.add(deleteAction);
 
         menuManager.update(true);
         menuManager.addMenuListener(new IMenuListener() {
@@ -379,9 +402,10 @@ public class KeyTreeContributor implements IKeyTreeContributor {
 				IStructuredSelection selection = (IStructuredSelection) treeViewer
 		                .getSelection();
 		        KeyTreeNode node = (KeyTreeNode) selection.getFirstElement();
-				refactorAction.setEnabled(node.getChildren().length == 0);
+				refactorAction.setEnabled(node == null || node.getChildren().length == 0);
 			}
 		});
+        Menu menu = menuManager.createContextMenu(tree);
         tree.setMenu(menu);
 
         // Bind actions to tree
