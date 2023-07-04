@@ -22,6 +22,7 @@ import org.eclipse.babel.tapiji.tools.core.model.manager.ResourceBundleChangedEv
 import org.eclipse.babel.tapiji.tools.core.ui.Activator;
 import org.eclipse.babel.tapiji.tools.core.ui.ResourceBundleManager;
 import org.eclipse.babel.tapiji.tools.core.ui.dialogs.ResourceBundleSelectionDialog;
+import org.eclipse.babel.tapiji.tools.core.ui.dialogs.ResourceBundleSelectionDialog.SelectionMode;
 import org.eclipse.babel.tapiji.tools.core.ui.utils.ImageUtils;
 import org.eclipse.babel.tapiji.tools.core.ui.widgets.PropertyKeySelectionTree;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -332,7 +333,7 @@ public class MessagesView extends ViewPart implements
             public void run() {
                 super.run();
                 ResourceBundleSelectionDialog sd = new ResourceBundleSelectionDialog(
-                        getViewSite().getShell(), null);
+                        getViewSite().getShell(), null, SelectionMode.SINGLE);
                 if (sd.open() == InputDialog.OK) {
                     String resourceBundle = sd.getSelectedBundleId();
 

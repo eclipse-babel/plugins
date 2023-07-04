@@ -11,15 +11,15 @@
  ******************************************************************************/
 package org.eclipse.babel.tapiji.tools.core.ui.dialogs;
 
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.babel.core.message.manager.RBManager;
 import org.eclipse.babel.tapiji.tools.core.ui.utils.ImageUtils;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -27,95 +27,80 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class ResourceBundleSelectionDialog extends ListDialog {
 
     private IProject project;
+    private SelectionMode selectionMode;
 
-    public ResourceBundleSelectionDialog(Shell parent, IProject project) {
+    public ResourceBundleSelectionDialog(Shell parent, IProject project, SelectionMode selectionMode) {
         super(parent);
         this.project = project;
+        this.selectionMode = selectionMode;
 
         initDialog();
     }
 
     protected void initDialog() {
         this.setAddCancelButton(true);
-        this.setMessage("Select one of the following Resource-Bundle to open:");
+        if (this.selectionMode == SelectionMode.SINGLE ) {
+            this.setMessage("Select one of the following Resource-Bundle to open:");
+        } else {
+            this.setMessage("Select the Resouce-Bundle(s) to open:");
+        }
+
         this.setTitle("Resource-Bundle Selector");
-        this.setContentProvider(new RBContentProvider());
+        this.setContentProvider(ArrayContentProvider.getInstance());
         this.setLabelProvider(new RBLabelProvider());
         this.setBlockOnOpen(true);
 
-        if (project != null)
-            this.setInput(RBManager.getInstance(project)
-                    .getMessagesBundleGroupNames());
-        else
+        if (project != null) {
+            this.setInput(RBManager.getInstance(project).getMessagesBundleGroupNames());
+        } else {
             this.setInput(RBManager.getAllMessagesBundleGroupNames());
+        }
     }
 
+    @Override
+	protected int getTableStyle() {
+		return (this.selectionMode == SelectionMode.MULTI ? SWT.MULTI : SWT.SINGLE) | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER;
+	}
+
+    /**
+     * Returns the selected resource bundle.
+     * In the case of a MULTI selection this method will return the first selection.
+     * If no resource bundle is selected this method will return null.
+     * 
+     * @return
+     */
     public String getSelectedBundleId() {
         Object[] selection = this.getResult();
-        if (selection != null && selection.length > 0)
+        if (selection != null && selection.length > 0) {
             return (String) selection[0];
+        }
         return null;
     }
 
-    class RBContentProvider implements IStructuredContentProvider {
-
-        @Override
-        public Object[] getElements(Object inputElement) {
-            List<String> resources = (List<String>) inputElement;
-            return resources.toArray();
-        }
-
-        @Override
-        public void dispose() {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            // TODO Auto-generated method stub
-
-        }
-
+    /**
+     * Returns the selected resource bundles.
+     * If no resource bundle is selected this method will return an empty array.
+     * 
+     * @return
+     */
+    public String[] getSelectedBundleIds() {
+        Object[] selection = this.getResult();
+        return Stream.of(selection) // Create stream from array
+        		.filter(String.class::isInstance) // only strings should pass!
+        		.map(String.class::cast) // cast to a string then
+        		.collect(Collectors.toSet()) // collect everything in a Set of strings
+        		.toArray(String[]::new); // convert the Set to a String[]
     }
 
-    class RBLabelProvider implements ILabelProvider {
-
+    static class RBLabelProvider extends LabelProvider {
         @Override
         public Image getImage(Object element) {
-            // TODO Auto-generated method stub
             return ImageUtils.getImage(ImageUtils.IMAGE_RESOURCE_BUNDLE);
         }
-
-        @Override
-        public String getText(Object element) {
-            // TODO Auto-generated method stub
-            return ((String) element);
-        }
-
-        @Override
-        public void addListener(ILabelProviderListener listener) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void dispose() {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public boolean isLabelProperty(Object element, String property) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        public void removeListener(ILabelProviderListener listener) {
-            // TODO Auto-generated method stub
-
-        }
-
     }
+
+    public enum SelectionMode {
+    	SINGLE, MULTI;
+    }
+
 }
