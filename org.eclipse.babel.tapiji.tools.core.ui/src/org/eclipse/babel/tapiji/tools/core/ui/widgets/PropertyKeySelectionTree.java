@@ -507,9 +507,13 @@ public class PropertyKeySelectionTree extends Composite implements
 
     protected void updateSorter(int idx) {
         SortInfo sortInfo = sorter.getSortInfo();
-        if (idx == sortInfo.getColIdx())
+        if ( sortInfo == null ) {
+        	sortInfo = new SortInfo();
+        }
+
+        if (idx == sortInfo.getColIdx()) {
             sortInfo.setDESC(!sortInfo.isDESC());
-        else {
+        }else {
             sortInfo.setColIdx(idx);
             sortInfo.setDESC(false);
         }
