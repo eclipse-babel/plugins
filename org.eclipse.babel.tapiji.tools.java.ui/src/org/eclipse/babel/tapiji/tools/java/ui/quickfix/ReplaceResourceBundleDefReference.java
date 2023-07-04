@@ -11,6 +11,7 @@
 package org.eclipse.babel.tapiji.tools.java.ui.quickfix;
 
 import org.eclipse.babel.tapiji.tools.core.ui.dialogs.ResourceBundleSelectionDialog;
+import org.eclipse.babel.tapiji.tools.core.ui.dialogs.ResourceBundleSelectionDialog.SelectionMode;
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
@@ -71,7 +72,7 @@ public class ReplaceResourceBundleDefReference implements IMarkerResolution2 {
 
             ResourceBundleSelectionDialog dialog = new ResourceBundleSelectionDialog(
                     Display.getDefault().getActiveShell(),
-                    resource.getProject());
+                    resource.getProject(), SelectionMode.SINGLE);
 
             if (dialog.open() != InputDialog.OK)
                 return;

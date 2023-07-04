@@ -22,16 +22,11 @@ import org.eclipse.babel.tapiji.tools.core.ui.utils.FontUtils;
 import org.eclipse.babel.tapiji.tools.core.ui.utils.ImageUtils;
 import org.eclipse.babel.tapiji.tools.core.ui.widgets.filter.FilterInfo;
 import org.eclipse.jface.text.Region;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.viewers.ViewerRow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.TreeItem;
 
 public class ResKeyTreeLabelProvider extends KeyTreeLabelProvider {
 
@@ -137,20 +132,9 @@ public class ResKeyTreeLabelProvider extends KeyTreeLabelProvider {
         return (element instanceof IValuedKeyTreeNode && searchEnabled);
     }
 
-    public void updateTreeViewer(TreeViewer treeViewer) {
-
-        for (TreeItem item : treeViewer.getTree().getItems()) {
-            Rectangle bounds = item.getBounds();
-            ViewerCell cell = treeViewer.getCell(new Point(bounds.x, bounds.y));
-            ViewerRow viewerRow = cell.getViewerRow();
-
-            for (int i = 0; i < viewerRow.getColumnCount(); i++) {
-                updateCell(viewerRow.getCell(i));
-            }
-        }
-    }
-
-    private void updateCell(ViewerCell cell) {
+    @Override
+    public void update(ViewerCell cell) {
+        super.update(cell);
         Object element = cell.getElement();
         int columnIndex = cell.getColumnIndex();
 
@@ -183,9 +167,6 @@ public class ResKeyTreeLabelProvider extends KeyTreeLabelProvider {
             } else {
                 cell.setForeground(gray);
             }
-        } else if (columnIndex == 0) {
-            super.update(cell);
         }
     }
-
 }

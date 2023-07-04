@@ -148,12 +148,10 @@ public class PropertyKeySelectionTree extends Composite implements
 
         constructWidget();
 
-        if (resourceBundle != null && resourceBundle.trim().length() > 0) {
-            initTreeViewer();
-            initMatchers();
-            initSorters();
-            treeViewer.expandAll();
-        }
+        initMatchers();
+        initSorters();
+        initTreeViewer();
+        treeViewer.expandAll();
 
         hookDragAndDrop();
         registerListeners();
@@ -167,7 +165,7 @@ public class PropertyKeySelectionTree extends Composite implements
 
     protected void initSorters() {
         sorter = new ValuedKeyTreeItemSorter(treeViewer, sortInfo);
-        treeViewer.setSorter(sorter);
+        treeViewer.setComparator(sorter);
     }
 
     public void enableFuzzyMatching(boolean enable) {
@@ -246,10 +244,18 @@ public class PropertyKeySelectionTree extends Composite implements
     }
 
     public void setTreeStructure() {
-        IAbstractKeyTreeModel model = KeyTreeFactory
-                .createModel(ResourceBundleManager.getManager(projectName)
-                        .getResourceBundle(resourceBundle));
-        if (treeViewer.getInput() == null) {
+
+        IAbstractKeyTreeModel model = null;
+
+    	ResourceBundleManager resourceBundleManager = ResourceBundleManager.getManager(this.projectName);
+    	if (resourceBundleManager != null ) {
+    		IMessagesBundleGroup localResourceBundle = resourceBundleManager.getResourceBundle(this.resourceBundle);
+    		if (localResourceBundle != null) {
+    			model = KeyTreeFactory.createModel(localResourceBundle);
+    		}
+    	}
+
+    	if (treeViewer.getInput() == null) {
             treeViewer.setUseHashlookup(true);
         }
         org.eclipse.jface.viewers.TreePath[] expandedTreePaths = treeViewer
@@ -268,11 +274,11 @@ public class PropertyKeySelectionTree extends Composite implements
 
         // update content provider
         contentProvider.setLocales(visibleLocales);
-        contentProvider.setProjectName(manager.getProject().getName());
+        contentProvider.setProjectName(manager != null ? manager.getProject().getName() : ""); //$NON-NLS-1$
         contentProvider.setBundleId(resourceBundle);
 
         // init label provider
-        IMessagesBundleGroup group = manager.getResourceBundle(resourceBundle);
+        IMessagesBundleGroup group = manager != null ? manager.getResourceBundle(resourceBundle) : null;
         labelProvider.setLocales(visibleLocales);
         if (treeViewer.getLabelProvider() != labelProvider)
             treeViewer.setLabelProvider(labelProvider);
@@ -501,9 +507,13 @@ public class PropertyKeySelectionTree extends Composite implements
 
     protected void updateSorter(int idx) {
         SortInfo sortInfo = sorter.getSortInfo();
-        if (idx == sortInfo.getColIdx())
+        if ( sortInfo == null ) {
+        	sortInfo = new SortInfo();
+        }
+
+        if (idx == sortInfo.getColIdx()) {
             sortInfo.setDESC(!sortInfo.isDESC());
-        else {
+        }else {
             sortInfo.setColIdx(idx);
             sortInfo.setDESC(false);
         }
@@ -592,13 +602,19 @@ public class PropertyKeySelectionTree extends Composite implements
     }
 
     protected void unregisterListeners() {
-        ResourceBundleManager manager = ResourceBundleManager
-                .getManager(projectName);
-        if (manager != null) {
-            RBManager.getInstance(manager.getProject())
-                    .removeMessagesEditorListener(editorListener);
+        ResourceBundleManager manager = ResourceBundleManager.getManager(this.projectName);
+        if (manager != null && this.editorListener != null) {
+        	RBManager rbManager = RBManager.getInstance(manager.getProject());
+        	if (rbManager != null) {
+        		rbManager.removeMessagesEditorListener(this.editorListener);
+        		this.editorListener = null;
+        	}
         }
-        treeViewer.removeSelectionChangedListener(selectionChangedListener);
+
+        if (this.selectionChangedListener != null) {
+			this.treeViewer.removeSelectionChangedListener(this.selectionChangedListener);
+			this.selectionChangedListener = null;
+		}
     }
 
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
@@ -650,15 +666,13 @@ public class PropertyKeySelectionTree extends Composite implements
                 : TreeType.Tree;
         labelProvider.setSearchEnabled(treeType.equals(TreeType.Flat));
         // WTF?
+        int colIndex = sorter.getSortInfo() != null ? sorter.getSortInfo().getColIdx() : 0;
         treeType = treeType.equals(TreeType.Tree)
-                && sorter.getSortInfo().getColIdx() == 0 ? TreeType.Tree
+                && colIndex == 0 ? TreeType.Tree
                 : TreeType.Flat;
         treeViewer.refresh();
 
         this.refreshContent(null);
-
-        // highlight the search results
-        labelProvider.updateTreeViewer(treeViewer);
     }
 
     public SortInfo getSortInfo() {

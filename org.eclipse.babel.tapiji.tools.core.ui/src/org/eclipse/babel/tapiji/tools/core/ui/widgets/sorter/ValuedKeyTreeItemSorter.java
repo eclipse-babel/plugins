@@ -16,9 +16,9 @@ import org.eclipse.babel.editor.api.IValuedKeyTreeNode;
 import org.eclipse.babel.tapiji.tools.core.ui.views.messagesview.SortInfo;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 
-public class ValuedKeyTreeItemSorter extends ViewerSorter {
+public class ValuedKeyTreeItemSorter extends ViewerComparator {
 
     private StructuredViewer viewer;
     private SortInfo sortInfo;

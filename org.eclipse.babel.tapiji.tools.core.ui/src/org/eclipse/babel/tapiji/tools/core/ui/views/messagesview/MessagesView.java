@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.babel.tapiji.tools.core.Logger;
@@ -22,6 +23,7 @@ import org.eclipse.babel.tapiji.tools.core.model.manager.ResourceBundleChangedEv
 import org.eclipse.babel.tapiji.tools.core.ui.Activator;
 import org.eclipse.babel.tapiji.tools.core.ui.ResourceBundleManager;
 import org.eclipse.babel.tapiji.tools.core.ui.dialogs.ResourceBundleSelectionDialog;
+import org.eclipse.babel.tapiji.tools.core.ui.dialogs.ResourceBundleSelectionDialog.SelectionMode;
 import org.eclipse.babel.tapiji.tools.core.ui.utils.ImageUtils;
 import org.eclipse.babel.tapiji.tools.core.ui.widgets.PropertyKeySelectionTree;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -196,60 +198,67 @@ public class MessagesView extends ViewPart implements
     }
 
     protected void refreshSearchbarState() {
-        lblScale.setVisible(treeViewer != null ? treeViewer
-                .isFuzzyMatchingEnabled() : viewState.isFuzzyMatchingEnabled());
-        fuzzyScaler.setVisible(treeViewer != null ? treeViewer
-                .isFuzzyMatchingEnabled() : viewState.isFuzzyMatchingEnabled());
+    	this.lblScale.setVisible(this.treeViewer != null ? this.treeViewer
+                .isFuzzyMatchingEnabled() : this.viewState.isFuzzyMatchingEnabled());
+    	this.fuzzyScaler.setVisible(this.treeViewer != null ? this.treeViewer
+                .isFuzzyMatchingEnabled() : this.viewState.isFuzzyMatchingEnabled());
         if (treeViewer != null ? treeViewer.isFuzzyMatchingEnabled()
-                : viewState.isFuzzyMatchingEnabled()) {
-            ((GridData) lblScale.getLayoutData()).heightHint = 40;
-            ((GridData) fuzzyScaler.getLayoutData()).heightHint = 40;
+                : this.viewState.isFuzzyMatchingEnabled()) {
+            ((GridData) this.lblScale.getLayoutData()).heightHint = 40;
+            ((GridData) this.fuzzyScaler.getLayoutData()).heightHint = 40;
         } else {
-            ((GridData) lblScale.getLayoutData()).heightHint = 0;
-            ((GridData) fuzzyScaler.getLayoutData()).heightHint = 0;
+            ((GridData) this.lblScale.getLayoutData()).heightHint = 0;
+            ((GridData) this.fuzzyScaler.getLayoutData()).heightHint = 0;
         }
 
-        lblScale.getParent().layout();
-        lblScale.getParent().getParent().layout();
+        this.lblScale.getParent().layout();
+        this.lblScale.getParent().getParent().layout();
+
+        this.filter.setEnabled(!Objects.equals(this.viewState.getSelectedBundleId(), "")); //$NON-NLS-1$
     }
 
     protected void initMessagesTree(Composite parent) {
-        if (viewState.getSelectedProjectName() != null
-                && viewState.getSelectedProjectName().trim().length() > 0) {
+        if (this.viewState.getSelectedProjectName() != null
+                && this.viewState.getSelectedProjectName().trim().length() > 0) {
             try {
                 ResourceBundleManager.getManager(
-                        viewState.getSelectedProjectName())
+                		this.viewState.getSelectedProjectName())
                         .registerResourceBundleChangeListener(
-                                viewState.getSelectedBundleId(), this);
+                        		this.viewState.getSelectedBundleId(), this);
 
             } catch (Exception e) {
             }
         }
-        treeViewer = new PropertyKeySelectionTree(getViewSite(), getSite(),
+        this.treeViewer = new PropertyKeySelectionTree(getViewSite(), getSite(),
                 parent, SWT.NONE, viewState.getSelectedProjectName(),
-                viewState.getSelectedBundleId(), viewState.getVisibleLocales());
-        if (viewState.getSelectedProjectName() != null
-                && viewState.getSelectedProjectName().trim().length() > 0) {
-            if (viewState.getVisibleLocales() == null)
-                viewState.setVisibleLocales(treeViewer.getVisibleLocales());
+                this.viewState.getSelectedBundleId(), this.viewState.getVisibleLocales());
+        if (this.viewState.getSelectedProjectName() != null
+                && this.viewState.getSelectedProjectName().trim().length() > 0) {
+            if (this.viewState.getVisibleLocales() == null) {
+            	this.viewState.setVisibleLocales(this.treeViewer.getVisibleLocales());
+            }
 
-            if (viewState.getSortings() != null)
-                treeViewer.setSortInfo(viewState.getSortings());
+            if (this.viewState.getSortings() != null) {
+            	this.treeViewer.setSortInfo(this.viewState.getSortings());
+            }
+            this.treeViewer.enableFuzzyMatching(this.viewState.isFuzzyMatchingEnabled());
+            this.treeViewer.setMatchingPrecision(this.viewState.getMatchingPrecision());
+            this.treeViewer.setEditable(this.viewState.isEditable());
 
-            treeViewer.enableFuzzyMatching(viewState.isFuzzyMatchingEnabled());
-            treeViewer.setMatchingPrecision(viewState.getMatchingPrecision());
-            treeViewer.setEditable(viewState.isEditable());
-
-            if (viewState.getSearchString() != null)
-                treeViewer.setSearchString(viewState.getSearchString());
+            if (this.viewState.getSearchString() != null) {
+            	this.treeViewer.setSearchString(this.viewState.getSearchString());
+            }
         }
+
+        this.treeViewer.setEnabled(!Objects.equals(this.viewState.getSelectedBundleId(), "")); //$NON-NLS-1$
+
         // define the grid data for the layout
         GridData gridData = new GridData();
         gridData.horizontalAlignment = SWT.FILL;
         gridData.verticalAlignment = SWT.FILL;
         gridData.grabExcessHorizontalSpace = true;
         gridData.grabExcessVerticalSpace = true;
-        treeViewer.setLayoutData(gridData);
+        this.treeViewer.setLayoutData(gridData);
     }
 
     /**
@@ -260,19 +269,19 @@ public class MessagesView extends ViewPart implements
     }
 
     protected void redrawTreeViewer() {
-        parent.setRedraw(false);
-        treeViewer.dispose();
+        this.parent.setRedraw(false);
+        this.treeViewer.dispose();
         try {
-            initMessagesTree(parent);
+            initMessagesTree(this.parent);
             makeActions();
             contributeToActionBars();
             hookContextMenu();
         } catch (Exception e) {
             Logger.logError(e);
         }
-        parent.setRedraw(true);
-        parent.layout(true);
-        treeViewer.layout(true);
+        this.parent.setRedraw(true);
+        this.parent.layout(true);
+        this.treeViewer.layout(true);
         refreshSearchbarState();
     }
 
@@ -332,7 +341,7 @@ public class MessagesView extends ViewPart implements
             public void run() {
                 super.run();
                 ResourceBundleSelectionDialog sd = new ResourceBundleSelectionDialog(
-                        getViewSite().getShell(), null);
+                        getViewSite().getShell(), null, SelectionMode.SINGLE);
                 if (sd.open() == InputDialog.OK) {
                     String resourceBundle = sd.getSelectedBundleId();
 
@@ -479,7 +488,7 @@ public class MessagesView extends ViewPart implements
         super.init(site, memento);
 
         // init Viewstate
-        viewState = new MessagesViewState(null, null, false, null);
+        viewState = new MessagesViewState(null, null, false, ""); //$NON-NLS-1$
         viewState.init(memento);
     }
 
