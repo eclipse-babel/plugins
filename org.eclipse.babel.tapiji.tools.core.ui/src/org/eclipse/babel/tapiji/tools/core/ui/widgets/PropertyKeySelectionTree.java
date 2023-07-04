@@ -148,12 +148,10 @@ public class PropertyKeySelectionTree extends Composite implements
 
         constructWidget();
 
-        if (resourceBundle != null && resourceBundle.trim().length() > 0) {
-            initTreeViewer();
-            initMatchers();
-            initSorters();
-            treeViewer.expandAll();
-        }
+        initMatchers();
+        initSorters();
+        initTreeViewer();
+        treeViewer.expandAll();
 
         hookDragAndDrop();
         registerListeners();
@@ -167,7 +165,7 @@ public class PropertyKeySelectionTree extends Composite implements
 
     protected void initSorters() {
         sorter = new ValuedKeyTreeItemSorter(treeViewer, sortInfo);
-        treeViewer.setSorter(sorter);
+        treeViewer.setComparator(sorter);
     }
 
     public void enableFuzzyMatching(boolean enable) {
@@ -246,10 +244,18 @@ public class PropertyKeySelectionTree extends Composite implements
     }
 
     public void setTreeStructure() {
-        IAbstractKeyTreeModel model = KeyTreeFactory
-                .createModel(ResourceBundleManager.getManager(projectName)
-                        .getResourceBundle(resourceBundle));
-        if (treeViewer.getInput() == null) {
+
+        IAbstractKeyTreeModel model = null;
+
+    	ResourceBundleManager resourceBundleManager = ResourceBundleManager.getManager(this.projectName);
+    	if (resourceBundleManager != null ) {
+    		IMessagesBundleGroup localResourceBundle = resourceBundleManager.getResourceBundle(this.resourceBundle);
+    		if (localResourceBundle != null) {
+    			model = KeyTreeFactory.createModel(localResourceBundle);
+    		}
+    	}
+
+    	if (treeViewer.getInput() == null) {
             treeViewer.setUseHashlookup(true);
         }
         org.eclipse.jface.viewers.TreePath[] expandedTreePaths = treeViewer
@@ -268,11 +274,11 @@ public class PropertyKeySelectionTree extends Composite implements
 
         // update content provider
         contentProvider.setLocales(visibleLocales);
-        contentProvider.setProjectName(manager.getProject().getName());
+        contentProvider.setProjectName(manager != null ? manager.getProject().getName() : ""); //$NON-NLS-1$
         contentProvider.setBundleId(resourceBundle);
 
         // init label provider
-        IMessagesBundleGroup group = manager.getResourceBundle(resourceBundle);
+        IMessagesBundleGroup group = manager != null ? manager.getResourceBundle(resourceBundle) : null;
         labelProvider.setLocales(visibleLocales);
         if (treeViewer.getLabelProvider() != labelProvider)
             treeViewer.setLabelProvider(labelProvider);
@@ -650,8 +656,9 @@ public class PropertyKeySelectionTree extends Composite implements
                 : TreeType.Tree;
         labelProvider.setSearchEnabled(treeType.equals(TreeType.Flat));
         // WTF?
+        int colIndex = sorter.getSortInfo() != null ? sorter.getSortInfo().getColIdx() : 0;
         treeType = treeType.equals(TreeType.Tree)
-                && sorter.getSortInfo().getColIdx() == 0 ? TreeType.Tree
+                && colIndex == 0 ? TreeType.Tree
                 : TreeType.Flat;
         treeViewer.refresh();
 
