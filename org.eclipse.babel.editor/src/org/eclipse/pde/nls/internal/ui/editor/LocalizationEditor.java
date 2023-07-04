@@ -191,7 +191,7 @@ public class LocalizationEditor extends EditorPart {
                     if (result[i].equals("key")) { //$NON-NLS-1$
                         newConfigs[i] = KEY;
                     } else if (result[i].equals("default")) { //$NON-NLS-1$
-                        newConfigs[i] = new Locale("");
+                        newConfigs[i] = Locale.ROOT;
                     } else {
                         newConfigs[i] = LocaleUtil.parseLocale(result[i]);
                     }
@@ -600,7 +600,7 @@ public class LocalizationEditor extends EditorPart {
         filterOptions.pluginPatterns = new String[0];
         filterOptions.keysWithMissingEntriesOnly = false;
         sortOrder = KEY;
-        columnConfigs = new Object[] { KEY, new Locale(""), new Locale("de") }; //$NON-NLS-1$ //$NON-NLS-2$
+        columnConfigs = new Object[] { KEY, Locale.ROOT, new Locale("de") }; //$NON-NLS-1$ //$NON-NLS-2$
 
         // Load configuration
         try {
@@ -658,7 +658,7 @@ public class LocalizationEditor extends EditorPart {
                 if (value.equals(KEY)) {
                     columnConfigs[i] = KEY;
                 } else if (value.equals("default")) { //$NON-NLS-1$
-                    columnConfigs[i] = new Locale(""); //$NON-NLS-1$
+                    columnConfigs[i] = Locale.ROOT; //$NON-NLS-1$
                 } else {
                     try {
                         columnConfigs[i] = LocaleUtil.parseLocale(value);
@@ -1136,7 +1136,7 @@ public class LocalizationEditor extends EditorPart {
                         return null;
                     }
                     ResourceBundle bundle = entry.getParent().getBundle(
-                            new Locale(""));
+                            Locale.ROOT);
                     if (bundle == null) {
                         return null;
                     }

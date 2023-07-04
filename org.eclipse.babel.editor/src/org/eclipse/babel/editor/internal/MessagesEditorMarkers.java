@@ -95,7 +95,7 @@ public class MessagesEditorMarkers extends Observable implements
         // with another local=key: in other words
         // it makes a hash of the combination (key+locale).
         if (locale == null) {
-            locale = UIUtils.ROOT_LOCALE;
+            locale = Locale.ROOT;
         }
         return locale + "=" + key;
     }
@@ -203,7 +203,7 @@ public class MessagesEditorMarkers extends Observable implements
             return false;
         }
         Collection<IMessageCheck> markers = getFailedChecks(key,
-                UIUtils.ROOT_LOCALE);
+                Locale.ROOT);
         // if we get a missing on the root locale, it means the
         // that some localized resources are referring to a key that is not in
         // the default locale anymore: in other words, assuming the

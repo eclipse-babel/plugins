@@ -223,7 +223,7 @@ public class Builder extends IncrementalProjectBuilder {
 								if (((MessagesBundle) msgBundle).getLocale() == null
 										|| ((MessagesBundle) msgBundle)
 												.getLocale().equals(
-														UIUtils.ROOT_LOCALE)) {
+														Locale.ROOT)) {
 									// ok the default properties have been
 									// changed.
 									// make sure that all resources in this

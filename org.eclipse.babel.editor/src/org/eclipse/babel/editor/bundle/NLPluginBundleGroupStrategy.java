@@ -218,7 +218,7 @@ public class NLPluginBundleGroupStrategy extends DefaultBundleGroupStrategy {
         IContainer container = null;
         for (MessagesBundle mb : bundles) {
             if (mb.getLocale() == null
-                    || mb.getLocale().equals(UIUtils.ROOT_LOCALE)) {
+                    || mb.getLocale().equals(Locale.ROOT)) {
                 Object src = mb.getResource().getSource();
                 if (src instanceof IFile) {
                     container = ((IFile) src).getParent();
@@ -315,7 +315,7 @@ public class NLPluginBundleGroupStrategy extends DefaultBundleGroupStrategy {
             ind = ind + "/nl/".length();
             int lastFolder = path.lastIndexOf('/');
             if (lastFolder == ind) {
-                return UIUtils.ROOT_LOCALE;
+                return Locale.ROOT;
             }
             path = path.substring(ind, lastFolder);
             StringTokenizer tokens = new StringTokenizer(path, "/", false);
@@ -414,7 +414,7 @@ public class NLPluginBundleGroupStrategy extends DefaultBundleGroupStrategy {
                 }
             }
         }
-        return UIUtils.ROOT_LOCALE;
+        return Locale.ROOT;
     }
 
     /**
