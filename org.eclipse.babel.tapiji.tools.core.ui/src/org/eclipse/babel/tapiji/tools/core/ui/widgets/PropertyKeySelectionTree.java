@@ -598,13 +598,19 @@ public class PropertyKeySelectionTree extends Composite implements
     }
 
     protected void unregisterListeners() {
-        ResourceBundleManager manager = ResourceBundleManager
-                .getManager(projectName);
-        if (manager != null) {
-            RBManager.getInstance(manager.getProject())
-                    .removeMessagesEditorListener(editorListener);
+        ResourceBundleManager manager = ResourceBundleManager.getManager(this.projectName);
+        if (manager != null && this.editorListener != null) {
+        	RBManager rbManager = RBManager.getInstance(manager.getProject());
+        	if (rbManager != null) {
+        		rbManager.removeMessagesEditorListener(this.editorListener);
+        		this.editorListener = null;
+        	}
         }
-        treeViewer.removeSelectionChangedListener(selectionChangedListener);
+
+        if (this.selectionChangedListener != null) {
+			this.treeViewer.removeSelectionChangedListener(this.selectionChangedListener);
+			this.selectionChangedListener = null;
+		}
     }
 
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
@@ -663,9 +669,6 @@ public class PropertyKeySelectionTree extends Composite implements
         treeViewer.refresh();
 
         this.refreshContent(null);
-
-        // highlight the search results
-        labelProvider.updateTreeViewer(treeViewer);
     }
 
     public SortInfo getSortInfo() {
