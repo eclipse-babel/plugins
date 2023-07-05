@@ -25,9 +25,7 @@ import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.editor.widgets.NullableText;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CBanner;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyListener;
@@ -39,11 +37,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.events.IExpansionListener;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -85,7 +79,6 @@ public abstract class AbstractI18NEntry extends Composite {
     public AbstractI18NEntry(Composite parent,
             final AbstractMessagesEditor editor, final Locale locale) {
         super(parent, SWT.NONE);
-
         this.setLayout(new FillLayout());
         
         this.toolkit = new FormToolkit(this.getDisplay());
@@ -105,22 +98,8 @@ public abstract class AbstractI18NEntry extends Composite {
         this.section.setTextClient(bannerLeft);
         createTextbox();
         this.section.setClient(this.textBox);
-        this.section.addExpansionListener( new IExpansionListener() {
-			
-			@Override
-			public void expansionStateChanging(ExpansionEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void expansionStateChanged(ExpansionEvent arg0) {
-				AbstractI18NEntry.this.requestLayout();
-				AbstractI18NEntry.this.getParent().getParent().requestLayout();
-			}
-		});
-        
-        this.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_MAGENTA));    }
+		this.section.setLayoutData( new GridData(GridData.FILL_BOTH));
+    }
 
     public AbstractMessagesEditor getResourceBundleEditor() {
         return editor;
@@ -193,6 +172,8 @@ public abstract class AbstractI18NEntry extends Composite {
 				}
 			}
 		});
+
+		textBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         editor.addChangeListener(msgEditorUpdateKey);
     }

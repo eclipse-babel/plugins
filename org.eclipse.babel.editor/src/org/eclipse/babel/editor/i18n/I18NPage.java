@@ -21,9 +21,12 @@ import org.eclipse.babel.core.message.IMessagesBundle;
 import org.eclipse.babel.core.message.manager.IMessagesEditorListener;
 import org.eclipse.babel.core.message.manager.RBManager;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
+import org.eclipse.babel.editor.actions.KeyTreeVisibleAction;
+import org.eclipse.babel.editor.actions.NewLocaleAction;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
-import org.eclipse.babel.editor.tree.actions.AbstractRenameKeyAction;
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -34,14 +37,12 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.forms.IFormColors;
+import org.eclipse.ui.forms.widgets.ColumnLayout;
+import org.eclipse.ui.forms.widgets.ColumnLayoutData;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -59,13 +60,10 @@ public class I18NPage extends Composite implements ISelectionProvider {
     protected final AbstractMessagesEditor editor;
     protected final SideNavComposite keysComposite;
     private final Composite valuesComposite;
-    private final Map<Locale, AbstractI18NEntry> entryComposites = new HashMap<Locale, AbstractI18NEntry>();
+    private final Map<Locale, AbstractI18NEntry> entryComposites = new HashMap<>();
     private Composite entriesComposite;
 
-    // private Composite parent;
     private boolean keyTreeVisible = true;
-
-    // private final StackLayout layout = new StackLayout();
     private final SashForm sashForm;
 
 	private FormToolkit toolkit;
@@ -86,21 +84,22 @@ public class I18NPage extends Composite implements ISelectionProvider {
             final AbstractMessagesEditor editor) {
         super(parent, style);
         this.editor = editor;
+        this.toolkit = new FormToolkit(getDisplay());
+		this.setLayout(new FillLayout());
 
 		this.form = this.toolkit.createForm(this);
-		toolkit.decorateFormHeading(this.form);
+		this.toolkit.decorateFormHeading(this.form);
+		this.form.setImage(BabelSharedImages.get(IBabelSharedImages.IMAGE_RESOURCE_BUNDLE));
 		this.form.setText("Messages Editor");
-		Composite head = this.form.getHead();
-		IToolBarManager toolBarManager = this.form.getToolBarManager();
+		this.form.getBody().setLayout( new FillLayout());
 
-		this.form.getBody().setLayout(new FillLayout());
+        this.sashForm = new SashForm(this.form.getBody(), SWT.NONE);
+        this.sashForm.setBackground(this.toolkit.getColors().getColor(IFormColors.BORDER ));
 
-        sashForm = new SashForm(this.form.getBody(), SWT.NONE);
-        this.sashForm.setForeground(this.getDisplay().getSystemColor(SWT.COLOR_CYAN));
+        this.keysComposite = new SideNavComposite(sashForm, editor);
+        this.keysComposite.setBackground(this.form.getBackground());
 
-        keysComposite = new SideNavComposite(sashForm, editor);
-
-        valuesComposite = createValuesComposite(sashForm);
+        this.valuesComposite = createValuesComposite(sashForm);
 
         sashForm.setWeights(new int[] { 25, 75 });
 
@@ -135,6 +134,16 @@ public class I18NPage extends Composite implements ISelectionProvider {
             }
 
         });
+
+		IToolBarManager toolBarManager = this.form.getToolBarManager();
+
+        KeyTreeVisibleAction toggleKeyTreeAction = new KeyTreeVisibleAction();
+        toggleKeyTreeAction.setEditor(editor);
+        NewLocaleAction newLocaleAction = new NewLocaleAction();
+        newLocaleAction.setEditor(editor);
+        toolBarManager.add(toggleKeyTreeAction);
+        toolBarManager.add(newLocaleAction);
+		this.form.updateToolBar();
     }
 
     /**
@@ -169,27 +178,26 @@ public class I18NPage extends Composite implements ISelectionProvider {
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
         scrolledComposite.setSize(SWT.DEFAULT, 100);
-        
-        scrolledComposite.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_YELLOW));
-
+        scrolledComposite.setBackground(this.form.getBackground());
         entriesComposite = new Composite(scrolledComposite, SWT.NONE);
-        entriesComposite.setBackground(parent.getBackground());
-        entriesComposite.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
+        entriesComposite.setBackground(this.form.getBackground());
+
         scrolledComposite.setContent(entriesComposite);
         scrolledComposite.setMinSize(entriesComposite.computeSize(SWT.DEFAULT,
                 editor.getBundleGroup().getLocales().length * TEXT_MIN_HEIGHT));
 
-        entriesComposite.setLayout(new GridLayout(1, false));
+        ColumnLayout columnLayout = new ColumnLayout();
+        columnLayout.maxNumColumns = 1;
+        entriesComposite.setLayout(columnLayout);
         Locale[] locales = editor.getBundleGroup().getLocales();
         UIUtils.sortLocales(locales);
         locales = UIUtils.filterLocales(locales);
         for (int i = 0; i < locales.length; i++) {
             Locale locale = locales[i];
             AbstractI18NEntry i18NEntry = addI18NEntry(locale);
-            i18NEntry.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
-            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+            ColumnLayoutData gridData = new ColumnLayoutData();
+            gridData.heightHint = SWT.DEFAULT;
             i18NEntry.setLayoutData(gridData);
-            
         }
 
         entriesComposite.layout();

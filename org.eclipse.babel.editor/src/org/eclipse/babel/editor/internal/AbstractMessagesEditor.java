@@ -22,11 +22,9 @@ import java.util.Locale;
 
 import org.eclipse.babel.core.message.IMessagesBundle;
 import org.eclipse.babel.core.message.internal.IMessagesBundleGroupListener;
-import org.eclipse.babel.core.message.internal.IMessagesBundleListener;
 import org.eclipse.babel.core.message.internal.MessageException;
 import org.eclipse.babel.core.message.internal.MessagesBundle;
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
-import org.eclipse.babel.core.message.internal.MessagesBundleGroupAdapter;
 import org.eclipse.babel.core.message.manager.RBManager;
 import org.eclipse.babel.core.message.resource.IMessagesResource;
 import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
@@ -168,10 +166,6 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
         setPageText(index, MessagesEditorPlugin.getString("editor.properties")); //$NON-NLS-1$
         setPageImage(index, BabelSharedImages.get(IBabelSharedImages.IMAGE_RESOURCE_BUNDLE));
 
-        FormI18nPage otherPage = new FormI18nPage(getContainer(), this);
-        index = addPage(otherPage);
-        setPageText(index, MessagesEditorPlugin.getString("editor.properties")); //$NON-NLS-1$
- 
         // Create text editor pages for each locales
         Locale[] locales = messagesBundleGroup.getLocales();
         // first: sort the locales.
