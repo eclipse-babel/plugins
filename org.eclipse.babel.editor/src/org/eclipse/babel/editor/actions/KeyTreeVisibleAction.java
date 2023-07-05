@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.actions;
 
+import org.eclipse.babel.editor.i18n.I18NPage;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.babel.editor.util.BabelSharedImages;
@@ -38,14 +39,21 @@ public class KeyTreeVisibleAction extends Action {
     // TODO RBEditor hold such an action registry. Then move this method to
     // constructor
     public void setEditor(AbstractMessagesEditor editor) {
-        this.editor = editor;
-        if(this.editor != null) {
-        editor.addChangeListener(new MessagesEditorChangeAdapter() {
-            public void keyTreeVisibleChanged(boolean visible) {
-                setChecked(visible);
-            }
-        });
-        setChecked(editor.getI18NPage().isKeyTreeVisible());
+		this.editor = editor;
+		if (this.editor != null) {
+			editor.addChangeListener(new MessagesEditorChangeAdapter() {
+				public void keyTreeVisibleChanged(boolean visible) {
+					setChecked(visible);
+				}
+			});
+
+			boolean keyTreeVisible = true;
+			I18NPage i18nPage = editor.getI18NPage();
+			if (i18nPage != null) {
+				keyTreeVisible = i18nPage.isKeyTreeVisible();
+			}
+
+			setChecked(keyTreeVisible);
         }
     }
 

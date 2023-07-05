@@ -81,10 +81,8 @@ public class NullableText extends Composite {
         gridLayout.verticalSpacing = 0;
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
-        setLayout(gridLayout);
-        GridData gd = new GridData(GridData.FILL_BOTH);
-        setLayoutData(gd);
 
+        setLayout(gridLayout);
         initComponents();
 		this.locale = locale;
 
@@ -186,6 +184,7 @@ public class NullableText extends Composite {
     private void initComponents() {
         GridData gridData = new GridData(GridData.FILL, GridData.FILL, true,
                 true);
+        gridData.heightHint = 100;
         text.setLayoutData(gridData);
 
         text.addKeyListener(keyListener);

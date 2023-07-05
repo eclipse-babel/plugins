@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Tree for displaying and navigating through resource bundle keys.
@@ -59,9 +60,9 @@ public class SideNavTextBoxComposite extends Composite {
     public SideNavTextBoxComposite(Composite parent,
             final AbstractMessagesEditor editor) {
         super(parent, SWT.NONE);
-
-        this.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_CYAN));
         
+        FormToolkit toolkit = new FormToolkit(getDisplay());
+
         this.editor = editor;
 
         GridLayout gridLayout = new GridLayout();
@@ -74,15 +75,14 @@ public class SideNavTextBoxComposite extends Composite {
         GridData gridData = null;
 
         // Text box
-        addTextBox = new Text(this, SWT.BORDER);
+        addTextBox = toolkit.createText(this, "", SWT.BORDER);
         gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         addTextBox.setLayoutData(gridData);
 
         // Add button
-        addButton = new Button(this, SWT.PUSH);
-        addButton.setText(MessagesEditorPlugin.getString("key.add")); //$NON-NLS-1$
+        addButton = toolkit.createButton(this, MessagesEditorPlugin.getString("key.add"),  SWT.PUSH); //$NON-NLS-1$
         addButton.setEnabled(false);
         addButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
