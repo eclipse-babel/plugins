@@ -13,7 +13,6 @@ package org.eclipse.babel.editor.i18n;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.tree.actions.CollapseAllAction;
 import org.eclipse.babel.editor.tree.actions.ExpandAllAction;
-import org.eclipse.babel.editor.tree.actions.FlatModelAction;
 import org.eclipse.babel.editor.tree.actions.TreeModelAction;
 import org.eclipse.babel.editor.tree.internal.KeyTreeContributor;
 import org.eclipse.jface.action.Separator;
@@ -69,17 +68,18 @@ public class SideNavComposite extends Composite {
         this.treeViewer = new TreeViewer(messageKeySection, SWT.SINGLE | SWT.BORDER
                 | SWT.V_SCROLL | SWT.H_SCROLL);
 
-        
         // createTopSection();
         createKeyTree();
         
         messageKeySection.setClient(this.treeViewer.getControl());
 
-        toolBarMgr.add(new TreeModelAction(editor, treeViewer));
-        toolBarMgr.add(new FlatModelAction(editor, treeViewer));
+        toolBarMgr.add(new TreeModelAction(this.editor, this.treeViewer));
         toolBarMgr.add(new Separator());
-        toolBarMgr.add(new ExpandAllAction(editor, treeViewer));
-        toolBarMgr.add(new CollapseAllAction(editor, treeViewer));
+        toolBarMgr.add(new ExpandAllAction(this.editor, this.treeViewer));
+        toolBarMgr.add(new CollapseAllAction(this.editor, this.treeViewer));
+
+        toolBarMgr.add(new FilterDropDown(this.editor, this.treeViewer));
+
         toolBarMgr.update(true);
 
         // TODO have two toolbars, one left-align, and one right, with drop
@@ -89,6 +89,8 @@ public class SideNavComposite extends Composite {
         textBoxComp.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
     }
 
+    
+    
     // private void initListener() {
     // IResourceChangeListener listener = new IResourceChangeListener() {
     //

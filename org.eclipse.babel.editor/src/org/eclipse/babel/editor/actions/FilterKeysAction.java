@@ -35,12 +35,22 @@ public class FilterKeysAction extends Action {
      *            The flag that will be set on unset
      */
     public FilterKeysAction(int flagToSet) {
-        super("", IAction.AS_CHECK_BOX);
+    	this(null, flagToSet);
+    }
+
+    /**
+     * @param editor The MessageEditor to interact with
+     * @param flagToSet
+     *            The flag that will be set on unset
+     */
+    public FilterKeysAction(AbstractMessagesEditor editor, int flagToSet) {
+        super("", IAction.AS_RADIO_BUTTON);
+        this.editor = editor;
         this.flagToSet = flagToSet;
         listener = new ChangeListener();
         update();
     }
-
+    
     private class ChangeListener extends MessagesEditorChangeAdapter {
         public void showOnlyUnusedAndMissingChanged(int hideEverythingElse) {
             MessagesEditorContributor.FILTERS.updateActionBars();
