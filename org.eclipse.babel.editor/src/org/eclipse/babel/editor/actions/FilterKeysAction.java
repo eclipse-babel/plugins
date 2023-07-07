@@ -11,14 +11,14 @@
 package org.eclipse.babel.editor.actions;
 
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
-import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
-import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
-import org.eclipse.babel.editor.internal.MessagesEditorContributor;
+import org.eclipse.babel.editor.tree.internal.OnlyUnsuedAndMissingKey;
 import org.eclipse.babel.editor.util.BabelSharedImages;
 import org.eclipse.babel.editor.util.IBabelSharedImages;
+import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.TreeViewer;
 
 /**
  * 
@@ -26,9 +26,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
  */
 public class FilterKeysAction extends Action {
 
-    private AbstractMessagesEditor editor;
+    private TreeViewer treeViewer;
     private final int flagToSet;
-    private ChangeListener listener;
 
     /**
      * @param flagToSet
@@ -39,60 +38,53 @@ public class FilterKeysAction extends Action {
     }
 
     /**
-     * @param editor The MessageEditor to interact with
+     * @param treeViewer The TreeViewer to interact with
      * @param flagToSet
      *            The flag that will be set on unset
      */
-    public FilterKeysAction(AbstractMessagesEditor editor, int flagToSet) {
+    public FilterKeysAction(TreeViewer treeViewer, int flagToSet) {
         super("", IAction.AS_RADIO_BUTTON);
-        this.editor = editor;
+        this.treeViewer = treeViewer;
         this.flagToSet = flagToSet;
-        listener = new ChangeListener();
         update();
     }
-    
-    private class ChangeListener extends MessagesEditorChangeAdapter {
-        public void showOnlyUnusedAndMissingChanged(int hideEverythingElse) {
-            MessagesEditorContributor.FILTERS.updateActionBars();
-        }
-    }
+
 
     /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
-        if (editor != null) {
-            if (editor.isShowOnlyUnusedAndMissingKeys() != flagToSet) {
-                editor.setShowOnlyUnusedMissingKeys(flagToSet);
-                // listener.showOnlyUnusedAndMissingChanged(flagToSet)
+    	
+    	OnlyUnsuedAndMissingKey keyFilter = UIUtils.getFilter(this.treeViewer, OnlyUnsuedAndMissingKey.class);
+    	if ( keyFilter != null ) {
+            if (keyFilter.isShowOnlyUnusedAndMissingKeys() != flagToSet) {
+            	keyFilter.setShowOnlyUnusedMissingKeys(flagToSet);
             } else {
-                editor.setShowOnlyUnusedMissingKeys(IMessagesEditorChangeListener.SHOW_ALL);
-                // listener.showOnlyUnusedAndMissingChanged(IMessagesEditorChangeListener.SHOW_ALL)
+            	keyFilter.setShowOnlyUnusedMissingKeys(IMessagesEditorChangeListener.SHOW_ALL);
             }
-        }
+    	}
     }
 
     public void update() {
-        if (editor == null) {
-            super.setEnabled(false);
-        } else {
-            super.setEnabled(true);
+    	super.setEnabled(this.treeViewer != null);
+
+    	boolean checked = false;
+        if (this.treeViewer != null) {
+        	OnlyUnsuedAndMissingKey keyFilter = UIUtils.getFilter(this.treeViewer, OnlyUnsuedAndMissingKey.class);
+        	checked = keyFilter != null && keyFilter.isShowOnlyUnusedAndMissingKeys() == flagToSet;
         }
 
-        if (editor != null
-                && editor.isShowOnlyUnusedAndMissingKeys() == flagToSet) {
-            setChecked(true);
-        } else {
-            setChecked(false);
-        }
+    	setChecked(checked);
+
         setText(getTextInternal());
         setToolTipText(getTooltipInternal());
         setImageDescriptor(getImageDescriptor());
-
     }
 
+    @Override
     public ImageDescriptor getImageDescriptor() {
         switch (flagToSet) {
         case IMessagesEditorChangeListener.SHOW_ONLY_MISSING:
@@ -106,18 +98,6 @@ public class FilterKeysAction extends Action {
             return BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_KEY);
         }
     }
-
-    /*
-     * public String getImageKey() { switch (flagToSet) { case
-     * IMessagesEditorChangeListener.SHOW_ONLY_MISSING: return
-     * UIUtils.IMAGE_MISSING_TRANSLATION; case
-     * IMessagesEditorChangeListener.SHOW_ONLY_MISSING_AND_UNUSED: return
-     * UIUtils.IMAGE_UNUSED_AND_MISSING_TRANSLATIONS; case
-     * IMessagesEditorChangeListener.SHOW_ONLY_UNUSED: return
-     * UIUtils.IMAGE_UNUSED_TRANSLATION; case
-     * IMessagesEditorChangeListener.SHOW_ALL: default: return
-     * UIUtils.IMAGE_KEY; } }
-     */
 
     public String getTextInternal() {
         switch (flagToSet) {
@@ -135,34 +115,5 @@ public class FilterKeysAction extends Action {
 
     private String getTooltipInternal() {
         return getTextInternal();
-        // if (editor == null) {
-        // return "no active editor";
-        // }
-        // switch (editor.isShowOnlyUnusedAndMissingKeys()) {
-        // case IMessagesEditorChangeListener.SHOW_ONLY_MISSING:
-        // return "Showing only keys with missing translation";
-        // case IMessagesEditorChangeListener.SHOW_ONLY_MISSING_AND_UNUSED:
-        // return "Showing only keys with missing or unused translation";
-        // case IMessagesEditorChangeListener.SHOW_ONLY_UNUSED:
-        // return "Showing only  keys with missing translation";
-        // case IMessagesEditorChangeListener.SHOW_ALL:
-        // default:
-        // return "Showing all keys";
-        // }
     }
-
-    public void setEditor(AbstractMessagesEditor editor) {
-        if (editor == this.editor) {
-            return;// no change
-        }
-        if (this.editor != null) {
-            this.editor.removeChangeListener(listener);
-        }
-        this.editor = editor;
-        update();
-        if (editor != null) {
-            editor.addChangeListener(listener);
-        }
-    }
-
 }

@@ -83,6 +83,7 @@ public class I18NPage extends Composite implements ISelectionProvider {
     public I18NPage(Composite parent, int style,
             final AbstractMessagesEditor editor) {
         super(parent, style);
+
         this.editor = editor;
         this.toolkit = new FormToolkit(getDisplay());
 		this.setLayout(new FillLayout());
@@ -137,10 +138,8 @@ public class I18NPage extends Composite implements ISelectionProvider {
 
 		IToolBarManager toolBarManager = this.form.getToolBarManager();
 
-        KeyTreeVisibleAction toggleKeyTreeAction = new KeyTreeVisibleAction();
-        toggleKeyTreeAction.setEditor(editor);
-        NewLocaleAction newLocaleAction = new NewLocaleAction();
-        newLocaleAction.setEditor(editor);
+        KeyTreeVisibleAction toggleKeyTreeAction = new KeyTreeVisibleAction(editor);
+        NewLocaleAction newLocaleAction = new NewLocaleAction(editor);
         toolBarManager.add(toggleKeyTreeAction);
         toolBarManager.add(newLocaleAction);
 		this.form.updateToolBar();

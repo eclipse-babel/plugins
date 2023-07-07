@@ -36,10 +36,10 @@ public class FilterDropDown extends Action {
     }
 
     private void createActions() {
-    	actions.add(new FilterKeysAction(this.editor, IMessagesEditorChangeListener.SHOW_ALL));
-    	actions.add(new FilterKeysAction(this.editor, IMessagesEditorChangeListener.SHOW_ONLY_MISSING));
-    	actions.add(new FilterKeysAction(this.editor, IMessagesEditorChangeListener.SHOW_ONLY_MISSING_AND_UNUSED));
-    	actions.add(new FilterKeysAction(this.editor, IMessagesEditorChangeListener.SHOW_ONLY_UNUSED));
+    	actions.add(new FilterKeysAction(this.treeViewer, IMessagesEditorChangeListener.SHOW_ALL));
+    	actions.add(new FilterKeysAction(this.treeViewer, IMessagesEditorChangeListener.SHOW_ONLY_MISSING));
+    	actions.add(new FilterKeysAction(this.treeViewer, IMessagesEditorChangeListener.SHOW_ONLY_MISSING_AND_UNUSED));
+    	actions.add(new FilterKeysAction(this.treeViewer, IMessagesEditorChangeListener.SHOW_ONLY_UNUSED));
     }
 
     @Override
