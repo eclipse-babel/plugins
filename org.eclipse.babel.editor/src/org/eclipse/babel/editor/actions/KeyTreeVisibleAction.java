@@ -29,17 +29,12 @@ public class KeyTreeVisibleAction extends Action {
     /**
      * 
      */
-    public KeyTreeVisibleAction() {
+    public KeyTreeVisibleAction(AbstractMessagesEditor editor) {
         super("Show/Hide Key Tree", IAction.AS_CHECK_BOX);
         // setText();
+        this.editor = editor;
         setToolTipText("Show/hide the key tree");
         setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_VIEW_LEFT));
-    }
-
-    // TODO RBEditor hold such an action registry. Then move this method to
-    // constructor
-    public void setEditor(AbstractMessagesEditor editor) {
-		this.editor = editor;
 		if (this.editor != null) {
 			editor.addChangeListener(new MessagesEditorChangeAdapter() {
 				public void keyTreeVisibleChanged(boolean visible) {
@@ -56,15 +51,13 @@ public class KeyTreeVisibleAction extends Action {
 			setChecked(keyTreeVisible);
         }
     }
-
     /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        editor.getI18NPage().setKeyTreeVisible(
-                !editor.getI18NPage().isKeyTreeVisible());
+        this.editor.getI18NPage().setKeyTreeVisible(!this.editor.getI18NPage().isKeyTreeVisible());
     }
 
 }

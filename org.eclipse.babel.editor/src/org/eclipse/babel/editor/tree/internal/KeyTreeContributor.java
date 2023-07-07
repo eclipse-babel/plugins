@@ -87,12 +87,13 @@ public class KeyTreeContributor implements IKeyTreeContributor {
                 treeType);
         treeViewer.setContentProvider(contentProvider);
         ColumnViewerToolTipSupport.enableFor(treeViewer);
-        treeViewer.setLabelProvider(new KeyTreeLabelProvider(editor, treeModel,
-                contentProvider));
-        if (treeViewer.getInput() == null)
-            treeViewer.setUseHashlookup(true);
+        treeViewer.setLabelProvider(new KeyTreeLabelProvider(editor, treeModel, contentProvider));
 
-        ViewerFilter onlyUnusedAndMissingKeysFilter = new OnlyUnsuedAndMissingKey();
+        if (treeViewer.getInput() == null) {
+            treeViewer.setUseHashlookup(true);
+        }
+
+        ViewerFilter onlyUnusedAndMissingKeysFilter = new OnlyUnsuedAndMissingKey(this.editor);
         ViewerFilter[] filters = { onlyUnusedAndMissingKeysFilter };
         treeViewer.setFilters(filters);
 
@@ -119,59 +120,6 @@ public class KeyTreeContributor implements IKeyTreeContributor {
                 treeViewer.getTree()) });
     }
 
-    private class OnlyUnsuedAndMissingKey extends ViewerFilter implements
-            AbstractKeyTreeModel.IKeyTreeNodeLeafFilter {
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers
-         * .Viewer, java.lang.Object, java.lang.Object)
-         */
-        public boolean select(Viewer viewer, Object parentElement,
-                Object element) {
-            if (editor.isShowOnlyUnusedAndMissingKeys() == IMessagesEditorChangeListener.SHOW_ALL
-                    || !(element instanceof KeyTreeNode)) {
-                // no filtering. the element is displayed by default.
-                return true;
-            }
-            if (editor.getI18NPage() != null
-                    && editor.getI18NPage().isKeyTreeVisible()) {
-                return editor.getKeyTreeModel().isBranchFiltered(this,
-                        (KeyTreeNode) element);
-            } else {
-                return isFilteredLeaf((KeyTreeNode) element);
-            }
-        }
-
-        /**
-         * @param node
-         * @return true if this node should be in the filter. Does not navigate
-         *         the tree of KeyTreeNode. false unless the node is a missing
-         *         or unused key.
-         */
-        public boolean isFilteredLeaf(IKeyTreeNode node) {
-            MessagesEditorMarkers markers = KeyTreeContributor.this.editor
-                    .getMarkers();
-            String key = node.getMessageKey();
-            boolean missingOrUnused = markers.isMissingOrUnusedKey(key);
-            if (!missingOrUnused) {
-                return false;
-            }
-            switch (editor.isShowOnlyUnusedAndMissingKeys()) {
-            case IMessagesEditorChangeListener.SHOW_ONLY_MISSING_AND_UNUSED:
-                return missingOrUnused;
-            case IMessagesEditorChangeListener.SHOW_ONLY_MISSING:
-                return !markers.isUnusedKey(key, missingOrUnused);
-            case IMessagesEditorChangeListener.SHOW_ONLY_UNUSED:
-                return markers.isUnusedKey(key, missingOrUnused);
-            default:
-                return false;
-            }
-        }
-
-    }
 
     /**
      * Contributes markers.

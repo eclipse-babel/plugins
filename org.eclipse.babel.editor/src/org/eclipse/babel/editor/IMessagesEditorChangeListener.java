@@ -17,7 +17,6 @@ import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
  * 
  */
 public interface IMessagesEditorChangeListener {
-
     public static int SHOW_ALL = 0;
     public static int SHOW_ONLY_MISSING_AND_UNUSED = 1;
     public static int SHOW_ONLY_MISSING = 2;

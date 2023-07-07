@@ -556,22 +556,8 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
         return i18nPage;
     }
 
-    /**
-     * one of the SHOW_* constants defined in the
-     * {@link IMessagesEditorChangeListener}
-     */
-    private int showOnlyMissingAndUnusedKeys = IMessagesEditorChangeListener.SHOW_ALL;
-
-    /**
-     * @return true when only unused and missing keys should be displayed. flase
-     *         by default.
-     */
-    public int isShowOnlyUnusedAndMissingKeys() {
-        return showOnlyMissingAndUnusedKeys;
-    }
-
-    public void setShowOnlyUnusedMissingKeys(int showFlag) {
-        showOnlyMissingAndUnusedKeys = showFlag;
+    public void notifyChange(int showFlag)
+    {
         for (IMessagesEditorChangeListener listener : getChangeListeners()) {
             listener.showOnlyUnusedAndMissingChanged(showFlag);
         }
