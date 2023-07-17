@@ -36,8 +36,8 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -53,14 +53,13 @@ public abstract class AbstractI18NEntry extends Composite {
     private final String projectName;
     protected final Locale locale;
 
-    private boolean expanded = true;
     protected NullableText textBox;
-//    private CBanner banner;
     protected String focusGainedText;
 
     public static final String INSTANCE_CLASS = "org.eclipse.babel.editor.i18n.I18NEntry";
 
     private IMessagesEditorChangeListener msgEditorUpdateKey = new MessagesEditorChangeAdapter() {
+        @Override
         public void selectedKeyChanged(String oldKey, String newKey) {
             updateKey(newKey);
         }
@@ -80,9 +79,9 @@ public abstract class AbstractI18NEntry extends Composite {
             final AbstractMessagesEditor editor, final Locale locale) {
         super(parent, SWT.NONE);
         this.setLayout(new FillLayout());
-        
+
         this.toolkit = new FormToolkit(this.getDisplay());
-        this.section = this.toolkit.createSection(this, Section.EXPANDED | Section.TWISTIE | Section.TITLE_BAR);
+        this.section = this.toolkit.createSection(this, ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR );
 
         this.editor = editor;
         this.locale = locale;
@@ -92,13 +91,18 @@ public abstract class AbstractI18NEntry extends Composite {
         String localeName = UIUtils.getDisplayName(this.getLocale());
         String title = localeName + (!isEditable() ? " (" + MessagesEditorPlugin.getString("editor.readOnly") + ")" : "");
 
-        Control bannerLeft = new FormEntryLeftBanner(this.section, this);// createBannerLeft(banner);
+//        Control bannerLeft = new FormEntryLeftBanner(this.section, this);// createBannerLeft(banner);
+//        this.section.setTextClient(bannerLeft);
+
+        EntryRightBanner entryRightBanner = new EntryRightBanner(this.section, this);
+        this.section.setTextClient(entryRightBanner);
 
         this.section.setText(title);
-        this.section.setTextClient(bannerLeft);
         createTextbox();
         this.section.setClient(this.textBox);
 		this.section.setLayoutData( new GridData(GridData.FILL_BOTH));
+		
+
     }
 
     public AbstractMessagesEditor getResourceBundleEditor() {
