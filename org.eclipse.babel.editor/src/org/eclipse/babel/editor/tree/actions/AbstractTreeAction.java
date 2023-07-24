@@ -15,8 +15,10 @@ import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 
@@ -31,7 +33,8 @@ public abstract class AbstractTreeAction extends Action {
 
     protected final TreeViewer treeViewer;
     protected final AbstractMessagesEditor editor;
-
+    private ISelectionChangedListener selectionChangedListener = null;
+//    private DisposeListener disposeListener = null;
     /**
      * 
      */
@@ -40,6 +43,7 @@ public abstract class AbstractTreeAction extends Action {
         super();
         this.treeViewer = treeViewer;
         this.editor = editor;
+        this.hookListeners();
     }
 
     /**
@@ -50,8 +54,17 @@ public abstract class AbstractTreeAction extends Action {
         super("", style);
         this.treeViewer = treeViewer;
         this.editor = editor;
+        this.hookListeners();
+    }
+    
+    private void hookListeners()
+    {
+    	this.selectionChangedListener = new ViewerSelectionListener();
+    	this.treeViewer.addSelectionChangedListener(this.selectionChangedListener);
     }
 
+    protected void selectionChanged(IStructuredSelection selection) { }
+    
     protected KeyTreeNode getNodeSelection() {
         IStructuredSelection selection = (IStructuredSelection) treeViewer
                 .getSelection();
@@ -89,5 +102,14 @@ public abstract class AbstractTreeAction extends Action {
 
     protected Shell getShell() {
         return treeViewer.getTree().getShell();
+    }
+    
+    class ViewerSelectionListener implements ISelectionChangedListener {
+
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			AbstractTreeAction.this.selectionChanged((IStructuredSelection) event.getSelection());
+			
+		}
     }
 }

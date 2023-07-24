@@ -56,7 +56,7 @@ public class SideNavComposite extends Composite {
         ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
         ToolBar toolBar = toolBarMgr.createControl(this);
 
-        this.treeViewer = new TreeViewer(this, SWT.SINGLE | SWT.BORDER
+        this.treeViewer = new TreeViewer(this, SWT.MULTI | SWT.BORDER
                 | SWT.V_SCROLL | SWT.H_SCROLL);
 
         setLayout(new GridLayout(1, false));
