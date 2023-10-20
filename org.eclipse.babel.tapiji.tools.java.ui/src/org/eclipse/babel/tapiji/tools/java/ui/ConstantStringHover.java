@@ -50,12 +50,12 @@ public class ConstantStringHover implements IJavaEditorTextHover {
             return;
         }
 
-        manager = ResourceBundleManager.getManager(cu.getJavaElement()
+        this.manager = ResourceBundleManager.getManager(cu.getJavaElement()
                 .getResource().getProject());
 
         // determine the element at the position of the cursur
-        csf = new ResourceAuditVisitor(null, manager.getProject().getName());
-        cu.accept(csf);
+        this.csf = new ResourceAuditVisitor(null, this.manager.getProject().getName());
+        cu.accept(this.csf);
     }
 
     @Override
@@ -72,10 +72,10 @@ public class ConstantStringHover implements IJavaEditorTextHover {
             return null;
         }
 
-        String bundleName = csf.getBundleReference(hoverRegion);
-        String key = csf.getKeyAt(hoverRegion);
+        String bundleName = this.csf.getBundleReference(hoverRegion);
+        String key = this.csf.getKeyAt(hoverRegion);
 
-        String hoverText = manager.getKeyHoverString(bundleName, key);
+        String hoverText = this.manager.getKeyHoverString(bundleName, key);
         if (hoverText == null || hoverText.equals("")) {
             return null;
         } else {
@@ -85,13 +85,13 @@ public class ConstantStringHover implements IJavaEditorTextHover {
 
     @Override
     public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-        if (editor == null) {
+        if (this.editor == null || this.csf == null) {
             return null;
         }
 
         // Retrieve the property key at this position. Otherwise, null is
         // returned.
-        return csf.getKeyAt(Long.valueOf(offset));
+        return this.csf.getKeyAt(Long.valueOf(offset));
     }
 
 }
