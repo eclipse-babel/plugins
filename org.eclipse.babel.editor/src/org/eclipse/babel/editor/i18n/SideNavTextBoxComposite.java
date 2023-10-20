@@ -10,6 +10,11 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.i18n;
 
+import java.util.Locale;
+
+import org.eclipse.babel.core.message.IMessagesBundle;
+import org.eclipse.babel.core.message.internal.MessagesBundle;
+import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
 import org.eclipse.babel.core.message.tree.IKeyTreeNode;
 import org.eclipse.babel.core.message.tree.visitor.NodePathRegexVisitor;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
@@ -120,8 +125,12 @@ public class SideNavTextBoxComposite extends Composite {
     }
 
     private void addKey(String key) {
-        editor.getBundleGroup().addMessages(key);
-        editor.setSelectedKey(key);
+        MessagesBundleGroup messagesBundleGroup = editor.getBundleGroup();
+        IMessagesBundle messagesBundle = messagesBundleGroup.getMessagesBundle(Locale.ROOT);
+        if (messagesBundle instanceof MessagesBundle theBundle) {
+            theBundle.addMessage(key);
+            editor.setSelectedKey(key);
+        }
     }
 
     private boolean isNewKey(String key) {
