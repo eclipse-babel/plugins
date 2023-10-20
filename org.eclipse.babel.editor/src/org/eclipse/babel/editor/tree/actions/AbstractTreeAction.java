@@ -10,7 +10,11 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.tree.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
+import org.eclipse.babel.core.message.tree.IKeyTreeNode;
 import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
@@ -28,17 +32,13 @@ import org.eclipse.swt.widgets.Shell;
  */
 public abstract class AbstractTreeAction extends Action {
 
-    // private static final KeyTreeNode[] EMPTY_TREE_NODES = new
-    // KeyTreeNode[]{};
-
     protected final TreeViewer treeViewer;
     protected final AbstractMessagesEditor editor;
     private ISelectionChangedListener selectionChangedListener = null;
-//    private DisposeListener disposeListener = null;
     /**
      * 
      */
-    public AbstractTreeAction(AbstractMessagesEditor editor,
+    protected AbstractTreeAction(AbstractMessagesEditor editor,
             TreeViewer treeViewer) {
         super();
         this.treeViewer = treeViewer;
@@ -49,14 +49,14 @@ public abstract class AbstractTreeAction extends Action {
     /**
      * 
      */
-    public AbstractTreeAction(AbstractMessagesEditor editor,
+    protected AbstractTreeAction(AbstractMessagesEditor editor,
             TreeViewer treeViewer, int style) {
         super("", style);
         this.treeViewer = treeViewer;
         this.editor = editor;
         this.hookListeners();
     }
-    
+
     private void hookListeners()
     {
     	this.selectionChangedListener = new ViewerSelectionListener();
@@ -71,17 +71,39 @@ public abstract class AbstractTreeAction extends Action {
         return (KeyTreeNode) selection.getFirstElement();
     }
 
-    protected KeyTreeNode[] getBranchNodes(KeyTreeNode node) {
-        return ((AbstractKeyTreeModel) treeViewer.getInput()).getBranch(node);
-        //
-        // Set childNodes = new TreeSet();
-        // childNodes.add(node);
-        // Object[] nodes = getContentProvider().getChildren(node);
-        // for (int i = 0; i < nodes.length; i++) {
-        // childNodes.addAll(
-        // Arrays.asList(getBranchNodes((KeyTreeNode) nodes[i])));
-        // }
-        // return (KeyTreeNode[]) childNodes.toArray(EMPTY_TREE_NODES);
+	protected List<IKeyTreeNode> getKeyTreeNodesFromSelection()
+	{
+        IStructuredSelection selection = (IStructuredSelection) this.treeViewer.getSelection();
+
+        /* Retrieve all the IKeyTreeNode:s that "is used as key" */
+        List<IKeyTreeNode> keyTreeNodes = new ArrayList<>();
+        for(Object object : selection.toList()) {
+        	if(object instanceof KeyTreeNode keyTreeNode) {
+				List<IKeyTreeNode> allChildKeys = getAllKeys(keyTreeNode);
+				keyTreeNodes.addAll(allChildKeys);
+        	}
+        }
+        
+        return keyTreeNodes;
+	}
+
+	protected static List<IKeyTreeNode> getAllKeys(IKeyTreeNode keyTreeNode) {
+		List<IKeyTreeNode> treeNodes = new ArrayList<>();
+		if (keyTreeNode != null) {
+			if (keyTreeNode.isUsedAsKey()) {
+				treeNodes.add(keyTreeNode);
+			}
+			for (IKeyTreeNode childKeyNode : keyTreeNode.getChildren()) {
+				List<IKeyTreeNode> allChildKeys = getAllKeys(childKeyNode);
+				treeNodes.addAll(allChildKeys);
+			}
+		}
+
+		return treeNodes;
+	}
+	
+    protected IKeyTreeNode[] getBranchNodes(IKeyTreeNode node) {
+        return ((AbstractKeyTreeModel) treeViewer.getInput()).getBranch((KeyTreeNode)node);
     }
 
     protected ITreeContentProvider getContentProvider() {
