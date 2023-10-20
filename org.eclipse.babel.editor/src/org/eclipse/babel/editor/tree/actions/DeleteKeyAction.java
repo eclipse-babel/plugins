@@ -10,7 +10,14 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.tree.actions;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
+import org.eclipse.babel.core.message.tree.IKeyTreeNode;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
@@ -47,20 +54,28 @@ public class DeleteKeyAction extends AbstractTreeAction implements IWorkbenchAct
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        KeyTreeNode node = getNodeSelection();
-        String key = node.getMessageKey();
+        List<IKeyTreeNode> selectedNodes = getKeyTreeNodesFromSelection();
         String msgHead = null;
         String msgBody = null;
-        if (getContentProvider().hasChildren(node)) {
+
+        Set<IKeyTreeNode> nodesToDelete = new HashSet<>();
+       
+        for ( IKeyTreeNode node : selectedNodes ) {
+        	nodesToDelete.add(node);
+        	Collections.addAll(nodesToDelete, getBranchNodes(node));
+        }
+        
+        if (nodesToDelete.size() > 1) {
             msgHead = MessagesEditorPlugin
                     .getString("dialog.delete.head.multiple"); //$NON-NLS-1$
             msgBody = MessagesEditorPlugin.getString(
-                    "dialog.delete.body.multiple", key);//$NON-NLS-1$ 
-        } else {
+                    "dialog.delete.body.multiple");//$NON-NLS-1$ 
+        } else if ( nodesToDelete.size() == 1) {
+        	IKeyTreeNode key = nodesToDelete.iterator().next();
             msgHead = MessagesEditorPlugin
                     .getString("dialog.delete.head.single"); //$NON-NLS-1$
             msgBody = MessagesEditorPlugin.getString(
-                    "dialog.delete.body.single", key); //$NON-NLS-1$
+                    "dialog.delete.body.single", key.getMessageKey()); //$NON-NLS-1$
         }
         MessageBox msgBox = new MessageBox(getShell(), SWT.ICON_QUESTION
                 | SWT.OK | SWT.CANCEL);
@@ -68,11 +83,8 @@ public class DeleteKeyAction extends AbstractTreeAction implements IWorkbenchAct
         msgBox.setText(msgHead);
         if (msgBox.open() == SWT.OK) {
             MessagesBundleGroup messagesBundleGroup = getBundleGroup();
-            KeyTreeNode[] nodesToDelete = getBranchNodes(node);
-            for (int i = 0; i < nodesToDelete.length; i++) {
-                KeyTreeNode nodeToDelete = nodesToDelete[i];
-                messagesBundleGroup
-                        .removeMessages(nodeToDelete.getMessageKey());
+            for (IKeyTreeNode nodeToDelete : nodesToDelete) {
+                 messagesBundleGroup.removeMessages(nodeToDelete.getMessageKey());
             }
         }
     }
