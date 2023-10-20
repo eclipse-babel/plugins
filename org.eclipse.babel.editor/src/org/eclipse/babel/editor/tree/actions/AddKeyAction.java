@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.tree.actions;
 
+import java.util.Locale;
+
+import org.eclipse.babel.core.message.IMessagesBundle;
+import org.eclipse.babel.core.message.internal.MessagesBundle;
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
 import org.eclipse.babel.core.message.tree.internal.KeyTreeNode;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
@@ -43,15 +47,17 @@ public class AddKeyAction extends AbstractTreeAction {
     @Override
     public void run() {
         KeyTreeNode node = getNodeSelection();
-        String key = node.getMessageKey();
+        String selectedKey = node != null ? node.getMessageKey() : "";
         String msgHead = MessagesEditorPlugin.getString("dialog.add.head");
         String msgBody = MessagesEditorPlugin.getString("dialog.add.body");
-        InputDialog dialog = new InputDialog(getShell(), msgHead, msgBody, key,
+        InputDialog dialog = new InputDialog(getShell(), msgHead, msgBody, selectedKey,
                 new IInputValidator() {
                     public String isValid(String newText) {
                         if (getBundleGroup().isMessageKey(newText)) {
                             return MessagesEditorPlugin
                                     .getString("dialog.error.exists");
+                        } else if (newText.isBlank()) {
+                        	return MessagesEditorPlugin.getString("dialog.error.invalidkey");
                         }
                         return null;
                     }
@@ -60,7 +66,10 @@ public class AddKeyAction extends AbstractTreeAction {
         if (dialog.getReturnCode() == Window.OK) {
             String inputKey = dialog.getValue();
             MessagesBundleGroup messagesBundleGroup = getBundleGroup();
-            messagesBundleGroup.addMessages(inputKey);
+            IMessagesBundle messagesBundle = messagesBundleGroup.getMessagesBundle(Locale.ROOT);
+            if ( messagesBundle instanceof MessagesBundle theBundle ) {
+            	theBundle.addMessage(inputKey);
+            }
         }
     }
 

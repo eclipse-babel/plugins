@@ -118,7 +118,9 @@ public class MessagesBundleGroup extends AbstractMessageModel implements
      */
     @Override
     public IMessagesBundle getMessagesBundle(Locale locale) {
-        return localeBundles.get(locale);
+    	// The ROOT locale is currently stored as a null key in the HashMap, need to swap it!
+    	Locale localeToUse = locale == Locale.ROOT ? null : locale;
+        return localeBundles.get(localeToUse);
     }
 
     /**
