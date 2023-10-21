@@ -31,8 +31,8 @@ public class MessagesBundleGroupValidator {
         // already open.
         // else, create MessagesBundle from PropertiesIFileResource
 
-        DuplicateValueCheck duplicateCheck = MsgEditorPreferences.getInstance()
-                .getReportDuplicateValues() ? new DuplicateValueCheck() : null;
+    	boolean performDuplicateValueCheck = MsgEditorPreferences.getInstance().getReportDuplicateValues();
+
         String[] keys = messagesBundleGroup.getMessageKeys();
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
@@ -44,19 +44,19 @@ public class MessagesBundleGroupValidator {
                             MissingValueCheck.MISSING_KEY));
                 }
             }
-            if (duplicateCheck != null) {
+            if (performDuplicateValueCheck) {
                 if (!MsgEditorPreferences.getInstance()
                         .getReportDuplicateValuesOnlyInRootLocales()
-                        || (locale == null || locale.toString().length() == 0)) {
+                        || (locale == null || locale.toString().length() == 0) ) {
                     // either the locale is the root locale either
                     // we report duplicated on all the locales anyways.
-                    if (duplicateCheck.checkKey(messagesBundleGroup,
+                    DuplicateValueCheck duplicateCheck = new DuplicateValueCheck();
+                	if (duplicateCheck.checkKey(messagesBundleGroup,
                             messagesBundleGroup.getMessage(key, locale))) {
                         markerStrategy.markFailed(new ValidationFailureEvent(
                                 messagesBundleGroup, locale, key,
                                 duplicateCheck));
                     }
-                    duplicateCheck.reset();
                 }
             }
         }
