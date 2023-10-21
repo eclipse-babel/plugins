@@ -65,7 +65,7 @@ public class SideNavComposite extends Composite {
 
         messageKeySection.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         
-        this.treeViewer = new TreeViewer(messageKeySection, SWT.SINGLE | SWT.BORDER
+        this.treeViewer = new TreeViewer(messageKeySection, SWT.MULTI | SWT.BORDER
                 | SWT.V_SCROLL | SWT.H_SCROLL);
 
         // createTopSection();
