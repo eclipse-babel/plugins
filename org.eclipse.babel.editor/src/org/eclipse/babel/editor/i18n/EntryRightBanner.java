@@ -31,10 +31,16 @@ import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -45,7 +51,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class EntryRightBanner extends Composite {
 
-    private Label colon;
+
     private Label warningIcon;
     private final Map actionByMarkerIds = new HashMap();
     private final ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
@@ -88,11 +94,39 @@ public class EntryRightBanner extends Composite {
         warningIcon.setImage(PlatformUI.getWorkbench().getSharedImages()
                 .getImage(ISharedImages.IMG_OBJS_WARN_TSK));
         warningIcon.setVisible(false);
-        warningIcon.setToolTipText("This locale has warnings.");
 
-        colon = new Label(this, SWT.NONE);
-        colon.setText(":");
-        colon.setVisible(false);
+    	LocaleWarningToolTip myTooltipLabel = new LocaleWarningToolTip(warningIcon) {
+
+			@Override
+			protected Composite createContentArea(Composite parent) {
+				Composite comp = new Composite( parent, SWT.NONE);
+
+				FillLayout layout = new FillLayout();
+				layout.marginWidth=5;
+				comp.setLayout(layout);
+				Link l = new Link(comp,SWT.NONE);
+				l.setText(
+						"This a custom tooltip you can: \n- pop up any control you want\n- define delays\n - ... \nGo and get Eclipse from <a>http://www.eclipse.org</a>");
+
+				l.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						openURL();
+					}
+				});
+				return comp;
+			}
+
+			protected void openURL() {
+				MessageBox box = new MessageBox(getShell(),SWT.ICON_INFORMATION);
+				box.setText("Eclipse.org");
+				box.setMessage("Here is where we'd open the URL.");
+				box.open();
+			}
+		};
+		myTooltipLabel.setShift(new Point(-5, -5));
+		myTooltipLabel.setHideOnMouseDown(false);
+		myTooltipLabel.activate();
 
         toolBarMgr.createControl(this);
         toolBarMgr.update(true);
@@ -113,8 +147,7 @@ public class EntryRightBanner extends Composite {
             public void run() {
                     if (isDisposed())
                         return;
-                // if (!PlatformUI.getWorkbench().getDisplay().isDisposed()
-                // && !editor.getMarkerManager().isDisposed()) {
+
                 boolean isMarked = false;
                 toolBarMgr.removeAll();
                 actionByMarkerIds.clear();
@@ -136,9 +169,8 @@ public class EntryRightBanner extends Composite {
                 getParent().layout(true, true);
 
                 warningIcon.setVisible(isMarked);
-                colon.setVisible(isMarked);
+
             }
-            // }
         });
         }
 
