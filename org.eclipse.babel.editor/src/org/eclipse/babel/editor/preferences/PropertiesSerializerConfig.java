@@ -14,7 +14,7 @@ package org.eclipse.babel.editor.preferences;
 import org.eclipse.babel.core.configuration.ConfigurationManager;
 import org.eclipse.babel.core.message.resource.ser.IPropertiesSerializerConfig;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * The concrete implementation of {@link IPropertiesSerializerConfig}.
@@ -25,8 +25,7 @@ public class PropertiesSerializerConfig implements IPropertiesSerializerConfig {
     // Moved from MsgEditorPreferences, to make it more flexible.
 
     /** MsgEditorPreferences. */
-    private static final Preferences PREFS = MessagesEditorPlugin.getDefault()
-            .getPluginPreferences();
+    private static final IPreferenceStore PREFS = MessagesEditorPlugin.getDefault().getPreferenceStore();
 
     PropertiesSerializerConfig() {
         ConfigurationManager.getInstance().setSerializerConfig(this);

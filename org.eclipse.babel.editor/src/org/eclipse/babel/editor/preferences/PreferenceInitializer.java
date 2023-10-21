@@ -10,10 +10,11 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.preferences;
 
+import org.eclipse.babel.core.message.resource.ser.IPropertiesSerializerConfig;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Initializes default preferences.
@@ -23,19 +24,12 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
     /**
-     * Constructor.
-     */
-    public PreferenceInitializer() {
-        super();
-    }
-
-    /**
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer
      *      #initializeDefaultPreferences()
      */
     public void initializeDefaultPreferences() {
-        Preferences prefs = MessagesEditorPlugin.getDefault()
-                .getPluginPreferences();
+
+    	IPreferenceStore prefs = MessagesEditorPlugin.getDefault().getPreferenceStore();
 
         // General
         prefs.setDefault(MsgEditorPreferences.UNICODE_UNESCAPE_ENABLED, true);
@@ -71,7 +65,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         prefs.setDefault(
                 MsgEditorPreferences.NEW_LINE_STYLE,
-                MsgEditorPreferences.getInstance().getSerializerConfig().NEW_LINE_UNIX);
+                IPropertiesSerializerConfig.NEW_LINE_UNIX);
 
         prefs.setDefault(MsgEditorPreferences.KEEP_EMPTY_FIELDS, false);
         prefs.setDefault(MsgEditorPreferences.SORT_KEYS, true);
@@ -94,14 +88,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         // locales filter: by default: don't filter locales.
         prefs.setDefault(MsgEditorPreferences.FILTER_LOCALES_STRING_MATCHERS,
                 "*"); //$NON-NLS-1$
-        prefs.addPropertyChangeListener(MsgEditorPreferences.getInstance());
 
         // setup the i18n validation nature and its associated builder
         // on all java projects when the plugin is started
         // an when the editor is opened.
-        prefs.setDefault(
-                MsgEditorPreferences.ADD_MSG_EDITOR_BUILDER_TO_JAVA_PROJECTS,
-                true); //$NON-NLS-1$
+        prefs.setDefault(MsgEditorPreferences.ADD_MSG_EDITOR_BUILDER_TO_JAVA_PROJECTS, false); // Changed 20231021
+
         prefs.addPropertyChangeListener(MsgEditorPreferences.getInstance());
 
     }

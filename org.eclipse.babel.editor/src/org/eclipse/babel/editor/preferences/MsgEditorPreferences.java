@@ -28,15 +28,16 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.text.StringMatcher;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.core.text.StringMatcher;
 
 /**
  * Messages Editor preferences.
@@ -187,8 +188,7 @@ public final class MsgEditorPreferences implements IPropertyChangeListener {
     public static final String ENABLE_PROPERTIES_INDEXER = "enablePropertiesIndexer";
 
     /** MsgEditorPreferences. */
-    private static final Preferences PREFS = MessagesEditorPlugin.getDefault()
-            .getPluginPreferences();
+    private static final IPreferenceStore PREFS = MessagesEditorPlugin.getDefault().getPreferenceStore();
 
     private static final MsgEditorPreferences INSTANCE = new MsgEditorPreferences();
 
@@ -494,7 +494,7 @@ public final class MsgEditorPreferences implements IPropertyChangeListener {
      *            the property change event object describing which property
      *            changed and how
      */
-    public void propertyChange(Preferences.PropertyChangeEvent event) {
+    public void propertyChange(PropertyChangeEvent event) {
         if (FILTER_LOCALES_STRING_MATCHERS.equals(event.getProperty())) {
             onLocalFilterChange();
         } else if (ADD_MSG_EDITOR_BUILDER_TO_JAVA_PROJECTS.equals(event
