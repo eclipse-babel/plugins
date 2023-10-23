@@ -10,9 +10,13 @@
  ******************************************************************************/
 package org.eclipse.babel.core.message.checks.internal;
 
+import java.util.Locale;
+
 import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundleGroup;
 import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
+import org.eclipse.babel.core.message.checks.MessageCheckResult;
 
 /**
  * Visitor for finding if a key has at least one corresponding bundle entry with
@@ -22,26 +26,26 @@ import org.eclipse.babel.core.message.checks.IMessageCheck;
  */
 public class MissingValueCheck implements IMessageCheck {
 
-    /** The singleton */
-    public static MissingValueCheck MISSING_KEY = new MissingValueCheck();
+	/** The singleton */
+	public static final MissingValueCheck INSTANCE = new MissingValueCheck();
 
-    /**
-     * Constructor.
-     */
-    private MissingValueCheck() {
-        super();
-    }
+	/**
+	 * Constructor.
+	 */
+	private MissingValueCheck() {
+		super();
+	}
 
-    /**
-     * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
-     *      org.eclipse.babel.core.message.internal.Message)
-     */
-    public boolean checkKey(IMessagesBundleGroup messagesBundleGroup,
-            IMessage message) {
-        if (message == null || message.getValue() == null
-                || message.getValue().length() == 0) {
-            return true;
-        }
-        return false;
-    }
+	/**
+	 * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
+	 *      String, Locale, org.eclipse.babel.core.message.internal.Message)
+	 */
+	public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, String key, Locale locale,
+			IMessage message) {
+		if (message == null || message.getValue() == null || message.getValue().length() == 0) {
+			return new MissingValueCheckResult(key, locale, message, this);
+		}
+		return MessageCheckResult.OK;
+	}
+
 }

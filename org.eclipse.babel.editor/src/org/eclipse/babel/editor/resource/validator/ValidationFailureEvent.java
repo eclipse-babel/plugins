@@ -12,7 +12,7 @@ package org.eclipse.babel.editor.resource.validator;
 
 import java.util.Locale;
 
-import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
 
 /**
@@ -25,7 +25,7 @@ public class ValidationFailureEvent {
     private final Locale locale;
     private final String key;
     // private final IResource resource;
-    private final IMessageCheck check;
+    private final IMessageCheckResult check;
 
     /**
      * @param messagesBundleGroup
@@ -39,7 +39,7 @@ public class ValidationFailureEvent {
             final MessagesBundleGroup messagesBundleGroup, final Locale locale,
             final String key,
             // final IResource resource,
-            final IMessageCheck check) {
+            final IMessageCheckResult check) {
         super();
         this.messagesBundleGroup = messagesBundleGroup;
         this.locale = locale;
@@ -58,7 +58,7 @@ public class ValidationFailureEvent {
     /**
      * @return the check, never null
      */
-    public IMessageCheck getCheck() {
+    public IMessageCheckResult getCheckResult() {
         return check;
     }
 

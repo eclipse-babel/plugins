@@ -18,8 +18,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
 import org.eclipse.babel.core.message.checks.internal.DuplicateValueCheck;
+import org.eclipse.babel.core.message.checks.internal.DuplicateValueMessageCheckResult;
 import org.eclipse.babel.core.message.checks.internal.MissingValueCheck;
+import org.eclipse.babel.core.message.checks.internal.MissingValueCheckResult;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
 import org.eclipse.babel.editor.i18n.actions.ShowDuplicateAction;
 import org.eclipse.babel.editor.i18n.actions.ShowMissingAction;
@@ -116,10 +119,10 @@ public class EntryRightBanner extends Composite {
                 toolBarMgr.removeAll();
                 actionByMarkerIds.clear();
                 String key = editor.getSelectedKey();
-                Collection<IMessageCheck> checks = editor.getMarkers()
+                Collection<IMessageCheckResult> checks = editor.getMarkers()
                         .getFailedChecks(key, locale);
                 if (checks != null) {
-                    for (IMessageCheck check : checks) {
+                    for (IMessageCheckResult check : checks) {
                         Action action = getCheckAction(key, check);
                         if (action != null) {
                             toolBarMgr.add(action);
@@ -141,12 +144,12 @@ public class EntryRightBanner extends Composite {
 
     }
 
-    private Action getCheckAction(String key, IMessageCheck check) {
-        if (check instanceof MissingValueCheck) {
+    private Action getCheckAction(String key, IMessageCheckResult check) {
+        if (check instanceof MissingValueCheckResult checkResult) {
             return new ShowMissingAction(key, locale);
-        } else if (check instanceof DuplicateValueCheck) {
+        } else if (check instanceof DuplicateValueMessageCheckResult checkResult) {
             return new ShowDuplicateAction(
-                    ((DuplicateValueCheck) check).getDuplicateKeys(), key,
+            		checkResult.getDuplicateKeys(), key,
                     locale);
         }
         return null;

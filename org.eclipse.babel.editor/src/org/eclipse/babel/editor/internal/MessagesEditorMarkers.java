@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Observable;
 
 import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
 import org.eclipse.babel.core.message.checks.internal.DuplicateValueCheck;
 import org.eclipse.babel.core.message.checks.internal.MissingValueCheck;
 import org.eclipse.babel.core.message.internal.MessagesBundle;
@@ -46,14 +47,14 @@ public class MessagesEditorMarkers extends Observable implements
      * index is the name of the key. value is the collection of markers on that
      * key
      */
-    private Map<String, Collection<IMessageCheck>> markersIndex = new HashMap<String, Collection<IMessageCheck>>();
+    private Map<String, Collection<IMessageCheckResult>> markersIndex = new HashMap<>();
 
     /**
      * Maps a localized key (a locale and key pair) to the collection of markers
      * for that key and that locale. If no there are no markers for the key and
      * locale then there will be no entry in the map.
      */
-    private Map<String, Collection<IMessageCheck>> localizedMarkersMap = new HashMap<String, Collection<IMessageCheck>>();
+    private Map<String, Collection<IMessageCheckResult>> localizedMarkersMap = new HashMap<>();
 
     /**
      * @param messagesBundleGroup
@@ -105,22 +106,22 @@ public class MessagesEditorMarkers extends Observable implements
      *      org.eclipse.babel.core.bundle.checks.IBundleEntryCheck)
      */
     public void markFailed(ValidationFailureEvent event) {
-        Collection<IMessageCheck> markersForKey = markersIndex.get(event
+        Collection<IMessageCheckResult> markersForKey = markersIndex.get(event
                 .getKey());
         if (markersForKey == null) {
-            markersForKey = new HashSet<IMessageCheck>();
+            markersForKey = new HashSet<>();
             markersIndex.put(event.getKey(), markersForKey);
         }
-        markersForKey.add(event.getCheck());
+        markersForKey.add(event.getCheckResult());
 
         String localizedKey = buildLocalizedKey(event.getLocale(),
                 event.getKey());
         markersForKey = localizedMarkersMap.get(localizedKey);
         if (markersForKey == null) {
-            markersForKey = new HashSet<IMessageCheck>();
+            markersForKey = new HashSet<>();
             localizedMarkersMap.put(localizedKey, markersForKey);
         }
-        markersForKey.add(event.getCheck());
+        markersForKey.add(event.getCheckResult());
 
         // System.out.println("CREATE EDITOR MARKER");
         setChanged();
@@ -137,7 +138,7 @@ public class MessagesEditorMarkers extends Observable implements
         return markersIndex.containsKey(key);
     }
 
-    public Collection<IMessageCheck> getFailedChecks(String key) {
+    public Collection<IMessageCheckResult> getFailedChecks(String key) {
         return markersIndex.get(key);
     }
 
@@ -148,7 +149,7 @@ public class MessagesEditorMarkers extends Observable implements
      * @return the collection of markers for the locale and key; the return
      *         value may be null if there are no markers
      */
-    public Collection<IMessageCheck> getFailedChecks(final String key,
+    public Collection<IMessageCheckResult> getFailedChecks(final String key,
             final Locale locale) {
         return localizedMarkersMap.get(buildLocalizedKey(locale, key));
     }
@@ -178,7 +179,7 @@ public class MessagesEditorMarkers extends Observable implements
      * @return true when the key has a missing or unused issue
      */
     public boolean isMissingOrUnusedKey(String key) {
-        Collection<IMessageCheck> markers = getFailedChecks(key);
+        Collection<IMessageCheckResult> markers = getFailedChecks(key);
         return markers != null && markersContainMissing(markers);
     }
 
@@ -187,7 +188,7 @@ public class MessagesEditorMarkers extends Observable implements
      * @return true when the key has a missing issue
      */
     public boolean isMissingKey(String key) {
-        Collection<IMessageCheck> markers = getFailedChecks(key);
+        Collection<IMessageCheckResult> markers = getFailedChecks(key);
         return markers != null && markersContainMissing(markers);
     }
 
@@ -202,7 +203,7 @@ public class MessagesEditorMarkers extends Observable implements
         if (!isMissingOrUnused) {
             return false;
         }
-        Collection<IMessageCheck> markers = getFailedChecks(key,
+        Collection<IMessageCheckResult> markers = getFailedChecks(key,
                 Locale.ROOT);
         // if we get a missing on the root locale, it means the
         // that some localized resources are referring to a key that is not in
@@ -218,18 +219,18 @@ public class MessagesEditorMarkers extends Observable implements
      * @return true when the value is a duplicate value
      */
     public boolean isDuplicateValue(String key) {
-        Collection<IMessageCheck> markers = getFailedChecks(key);
-        for (IMessageCheck marker : markers) {
-            if (marker instanceof DuplicateValueCheck) {
+        Collection<IMessageCheckResult> markers = getFailedChecks(key);
+        for (IMessageCheckResult marker : markers) {
+            if (marker.getMessageCheck() instanceof DuplicateValueCheck) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean markersContainMissing(Collection<IMessageCheck> markers) {
-        for (IMessageCheck marker : markers) {
-            if (marker == MissingValueCheck.MISSING_KEY) {
+    private boolean markersContainMissing(Collection<IMessageCheckResult> markers) {
+        for (IMessageCheckResult marker : markers) {
+            if (marker.getMessageCheck() == MissingValueCheck.INSTANCE) {
                 return true;
             }
         }
