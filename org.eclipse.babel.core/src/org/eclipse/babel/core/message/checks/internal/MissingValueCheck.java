@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.babel.core.message.checks.internal;
 
+import java.util.Locale;
+
 import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundleGroup;
 import org.eclipse.babel.core.message.checks.IMessageCheck;
@@ -36,15 +38,15 @@ public class MissingValueCheck implements IMessageCheck {
 
     /**
      * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
-     *      org.eclipse.babel.core.message.internal.Message)
+     *      String, Locale, org.eclipse.babel.core.message.internal.Message)
      */
     public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
-            IMessage message) {
+            String key, Locale locale, IMessage message) {
         if (message == null || message.getValue() == null
                 || message.getValue().length() == 0) {
-            return MessageCheckResult.OK;
+            return new MissingValueCheckResult(key, locale, message, this);
         }
-        return new MissingValueCheckResult(this);
+    	return MessageCheckResult.OK;
     }
    
 }

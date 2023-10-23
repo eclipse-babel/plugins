@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.babel.core.message.checks;
 
+import java.util.Locale;
+
 import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundleGroup;
 import org.eclipse.babel.core.message.internal.Message;
@@ -27,12 +29,13 @@ public interface IMessageCheck {
     /**
      * Checks whether a {@link Message} meets the implemented condition.
      * 
-     * @param messagesBundleGroup
-     *            messages bundle group
-     * @param message
-     *            the message being tested
+     * @param messagesBundleGroup messages bundle group
+     * @param key key being tested
+     * @param locale the locale being tested
+     * @param message the message being tested
+     * 
      * @return <code>MessageCheckResult.OK</code> if condition is successfully tested
      */
-	IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, IMessage message);
+	IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, String key, Locale locale, IMessage message);
 
 }

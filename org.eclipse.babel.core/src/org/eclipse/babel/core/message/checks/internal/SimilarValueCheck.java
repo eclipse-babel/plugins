@@ -12,6 +12,7 @@ package org.eclipse.babel.core.message.checks.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundle;
@@ -21,6 +22,7 @@ import org.eclipse.babel.core.message.checks.IMessageCheckResult;
 import org.eclipse.babel.core.message.checks.MessageCheckResult;
 import org.eclipse.babel.core.message.checks.proximity.IProximityAnalyzer;
 import org.eclipse.babel.core.message.checks.proximity.LevenshteinDistanceAnalyzer;
+import org.eclipse.babel.core.message.checks.proximity.WordCountAnalyzer;
 import org.eclipse.babel.core.util.BabelUtils;
 
 /**
@@ -30,11 +32,11 @@ import org.eclipse.babel.core.util.BabelUtils;
  */
 public class SimilarValueCheck implements IMessageCheck {
 
-    private String[] similarKeys;
     private IProximityAnalyzer analyzer;
 
-    /** The singleton */
-    public static final SimilarValueCheck INSTANCE = new SimilarValueCheck(LevenshteinDistanceAnalyzer.getInstance());
+    /** The available instances */
+    public static final SimilarValueCheck LEVENSHTEIN_DISTANCE = new SimilarValueCheck(LevenshteinDistanceAnalyzer.getInstance());
+    public static final SimilarValueCheck WORD_COUNT = new SimilarValueCheck(WordCountAnalyzer.getInstance());
     
     /**
      * Constructor.
@@ -46,10 +48,10 @@ public class SimilarValueCheck implements IMessageCheck {
 
     /**
      * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
-     *      org.eclipse.babel.core.message.internal.Message)
+     *      String, Locale, org.eclipse.babel.core.message.internal.Message)
      */
     public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
-            IMessage message) {
+            String key, Locale locale, IMessage message) {
         Collection<String> keys = new ArrayList<String>();
         if (message != null) {
             // TODO have case as preference
@@ -77,7 +79,7 @@ public class SimilarValueCheck implements IMessageCheck {
         if ( !keys.isEmpty() ) {
         	return MessageCheckResult.OK;
         } else {
-        	return new SimilarValueMessageCheckResult(keys.toArray(String[]::new), this);
+        	return new SimilarValueMessageCheckResult(keys.toArray(String[]::new), key, locale, message, this);
         }
     }
 }

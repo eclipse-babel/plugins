@@ -39,7 +39,7 @@ public class MessagesBundleGroupValidator {
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
             if (MsgEditorPreferences.getInstance().getReportMissingValues()) {
-            	IMessageCheckResult checkResult = MissingValueCheck.INSTANCE.checkKey(messagesBundleGroup, messagesBundleGroup.getMessage(key, locale));
+            	IMessageCheckResult checkResult = MissingValueCheck.INSTANCE.checkKey(messagesBundleGroup, key, locale, messagesBundleGroup.getMessage(key, locale));
 
                 if (checkResult!=MessageCheckResult.OK) {
                     markerStrategy.markFailed(new ValidationFailureEvent(
@@ -53,7 +53,7 @@ public class MessagesBundleGroupValidator {
                         || (locale == null || locale.toString().length() == 0) ) {
                     // either the locale is the root locale either
                     // we report duplicated on all the locales anyways.
-                	IMessageCheckResult checkResult = DuplicateValueCheck.INSTANCE.checkKey(messagesBundleGroup, messagesBundleGroup.getMessage(key, locale));
+                	IMessageCheckResult checkResult = DuplicateValueCheck.INSTANCE.checkKey(messagesBundleGroup, key, locale, messagesBundleGroup.getMessage(key, locale));
                 	if (checkResult!=MessageCheckResult.OK) {
                         markerStrategy.markFailed(new ValidationFailureEvent(
                                 messagesBundleGroup, locale, key,

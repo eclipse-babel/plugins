@@ -12,6 +12,7 @@ package org.eclipse.babel.core.message.checks.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundle;
@@ -38,7 +39,7 @@ public class DuplicateValueCheck implements IMessageCheck {
     }
 
     public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
-            IMessage message) {
+            String key, Locale locale, IMessage message) {
         Collection<String> keys = new ArrayList<>();
         if (message != null) {
             IMessagesBundle messagesBundle = messagesBundleGroup
@@ -58,7 +59,7 @@ public class DuplicateValueCheck implements IMessageCheck {
         if ( keys.isEmpty() ) {
         	return MessageCheckResult.OK;
         } else {
-        	return new DuplicateValueMessageCheckResult(keys.toArray(String[]::new), this);
+        	return new DuplicateValueMessageCheckResult(keys.toArray(String[]::new), key, locale, message, this);
         }
     }
 }
