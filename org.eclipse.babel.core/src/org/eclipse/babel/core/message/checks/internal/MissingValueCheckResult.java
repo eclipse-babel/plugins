@@ -15,6 +15,6 @@ public class MissingValueCheckResult extends MessageCheckResult {
 
 	@Override
 	public String getText() {
-		return MessageFormat.format( "The key \"{0}\" missing a value", this.getKey());
+		return MessageFormat.format("The key \"{0}\" missing a value", this.getKey());
 	}
 }

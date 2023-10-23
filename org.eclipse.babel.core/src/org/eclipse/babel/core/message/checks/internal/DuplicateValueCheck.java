@@ -31,35 +31,33 @@ public class DuplicateValueCheck implements IMessageCheck {
 
 	public static final DuplicateValueCheck INSTANCE = new DuplicateValueCheck();
 
-    /**
-     * Constructor.
-     */
-    private DuplicateValueCheck() {
-        super();
-    }
+	/**
+	 * Constructor.
+	 */
+	private DuplicateValueCheck() {
+		super();
+	}
 
-    public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
-            String key, Locale locale, IMessage message) {
-        Collection<String> keys = new ArrayList<>();
-        if (message != null) {
-            IMessagesBundle messagesBundle = messagesBundleGroup
-                    .getMessagesBundle(message.getLocale());
-            for (IMessage duplicateEntry : messagesBundle.getMessages()) {
-                if (!message.getKey().equals(duplicateEntry.getKey())
-                        && BabelUtils.equals(message.getValue(),
-                                duplicateEntry.getValue())) {
-                    keys.add(duplicateEntry.getKey());
-                }
-            }
-            if (!keys.isEmpty()) {
-                keys.add(message.getKey());
-            }
-        }
+	public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, String key, Locale locale,
+			IMessage message) {
+		Collection<String> keys = new ArrayList<>();
+		if (message != null) {
+			IMessagesBundle messagesBundle = messagesBundleGroup.getMessagesBundle(message.getLocale());
+			for (IMessage duplicateEntry : messagesBundle.getMessages()) {
+				if (!message.getKey().equals(duplicateEntry.getKey())
+						&& BabelUtils.equals(message.getValue(), duplicateEntry.getValue())) {
+					keys.add(duplicateEntry.getKey());
+				}
+			}
+			if (!keys.isEmpty()) {
+				keys.add(message.getKey());
+			}
+		}
 
-        if ( keys.isEmpty() ) {
-        	return MessageCheckResult.OK;
-        } else {
-        	return new DuplicateValueMessageCheckResult(keys.toArray(String[]::new), key, locale, message, this);
-        }
-    }
+		if (keys.isEmpty()) {
+			return MessageCheckResult.OK;
+		} else {
+			return new DuplicateValueMessageCheckResult(keys.toArray(String[]::new), key, locale, message, this);
+		}
+	}
 }

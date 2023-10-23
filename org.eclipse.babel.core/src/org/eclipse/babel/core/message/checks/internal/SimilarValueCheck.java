@@ -32,54 +32,53 @@ import org.eclipse.babel.core.util.BabelUtils;
  */
 public class SimilarValueCheck implements IMessageCheck {
 
-    private IProximityAnalyzer analyzer;
+	private IProximityAnalyzer analyzer;
 
-    /** The available instances */
-    public static final SimilarValueCheck LEVENSHTEIN_DISTANCE = new SimilarValueCheck(LevenshteinDistanceAnalyzer.getInstance());
-    public static final SimilarValueCheck WORD_COUNT = new SimilarValueCheck(WordCountAnalyzer.getInstance());
-    
-    /**
-     * Constructor.
-     */
-    private SimilarValueCheck(IProximityAnalyzer analyzer) {
-        super();
-        this.analyzer = analyzer;
-    }
+	/** The available instances */
+	public static final SimilarValueCheck LEVENSHTEIN_DISTANCE = new SimilarValueCheck(
+			LevenshteinDistanceAnalyzer.getInstance());
+	public static final SimilarValueCheck WORD_COUNT = new SimilarValueCheck(WordCountAnalyzer.getInstance());
 
-    /**
-     * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
-     *      String, Locale, org.eclipse.babel.core.message.internal.Message)
-     */
-    public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
-            String key, Locale locale, IMessage message) {
-        Collection<String> keys = new ArrayList<String>();
-        if (message != null) {
-            // TODO have case as preference
-            String value1 = message.getValue().toLowerCase();
-            IMessagesBundle messagesBundle = messagesBundleGroup
-                    .getMessagesBundle(message.getLocale());
-            for (IMessage similarEntry : messagesBundle.getMessages()) {
-                if (!message.getKey().equals(similarEntry.getKey())) {
-                    String value2 = similarEntry.getValue().toLowerCase();
-                    // TODO have preference to report identical as similar
-                    if (!BabelUtils.equals(value1, value2)
-                            && analyzer.analyse(value1, value2) >= 0.75) {
-                        // TODO use preferences
-                        // >= RBEPreferences.getReportSimilarValuesPrecision())
-                        // {
-                        keys.add(similarEntry.getKey());
-                    }
-                }
-            }
-            if (!keys.isEmpty()) {
-                keys.add(message.getKey());
-            }
-        }
+	/**
+	 * Constructor.
+	 */
+	private SimilarValueCheck(IProximityAnalyzer analyzer) {
+		super();
+		this.analyzer = analyzer;
+	}
 
-        if ( !keys.isEmpty() ) {
-        	return MessageCheckResult.OK;
-        } else {
-        	return new SimilarValueMessageCheckResult(keys.toArray(String[]::new), key, locale, message, this);
-        }
-    }
+	/**
+	 * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
+	 *      String, Locale, org.eclipse.babel.core.message.internal.Message)
+	 */
+	public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, String key, Locale locale,
+			IMessage message) {
+		Collection<String> keys = new ArrayList<String>();
+		if (message != null) {
+			// TODO have case as preference
+			String value1 = message.getValue().toLowerCase();
+			IMessagesBundle messagesBundle = messagesBundleGroup.getMessagesBundle(message.getLocale());
+			for (IMessage similarEntry : messagesBundle.getMessages()) {
+				if (!message.getKey().equals(similarEntry.getKey())) {
+					String value2 = similarEntry.getValue().toLowerCase();
+					// TODO have preference to report identical as similar
+					if (!BabelUtils.equals(value1, value2) && analyzer.analyse(value1, value2) >= 0.75) {
+						// TODO use preferences
+						// >= RBEPreferences.getReportSimilarValuesPrecision())
+						// {
+						keys.add(similarEntry.getKey());
+					}
+				}
+			}
+			if (!keys.isEmpty()) {
+				keys.add(message.getKey());
+			}
+		}
+
+		if (!keys.isEmpty()) {
+			return MessageCheckResult.OK;
+		} else {
+			return new SimilarValueMessageCheckResult(keys.toArray(String[]::new), key, locale, message, this);
+		}
+	}
 }

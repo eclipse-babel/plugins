@@ -26,27 +26,26 @@ import org.eclipse.babel.core.message.checks.MessageCheckResult;
  */
 public class MissingValueCheck implements IMessageCheck {
 
-    /** The singleton */
-    public static final MissingValueCheck INSTANCE = new MissingValueCheck();
+	/** The singleton */
+	public static final MissingValueCheck INSTANCE = new MissingValueCheck();
 
-    /**
-     * Constructor.
-     */
-    private MissingValueCheck() {
-        super();
-    }
+	/**
+	 * Constructor.
+	 */
+	private MissingValueCheck() {
+		super();
+	}
 
-    /**
-     * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
-     *      String, Locale, org.eclipse.babel.core.message.internal.Message)
-     */
-    public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
-            String key, Locale locale, IMessage message) {
-        if (message == null || message.getValue() == null
-                || message.getValue().length() == 0) {
-            return new MissingValueCheckResult(key, locale, message, this);
-        }
-    	return MessageCheckResult.OK;
-    }
-   
+	/**
+	 * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
+	 *      String, Locale, org.eclipse.babel.core.message.internal.Message)
+	 */
+	public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, String key, Locale locale,
+			IMessage message) {
+		if (message == null || message.getValue() == null || message.getValue().length() == 0) {
+			return new MissingValueCheckResult(key, locale, message, this);
+		}
+		return MessageCheckResult.OK;
+	}
+
 }

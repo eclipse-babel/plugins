@@ -49,5 +49,4 @@ public class MessageCheckResult implements IMessageCheckResult {
 	public IMessage getMessage() {
 		return this.message;
 	}
-
 }

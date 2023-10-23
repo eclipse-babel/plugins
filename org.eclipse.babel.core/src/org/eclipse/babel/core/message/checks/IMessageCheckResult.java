@@ -3,6 +3,7 @@ package org.eclipse.babel.core.message.checks;
 import java.util.Locale;
 
 import org.eclipse.babel.core.message.IMessage;
+
 /**
  * A result of a test performed by IMessageCheck
  */
@@ -21,7 +22,7 @@ public interface IMessageCheckResult {
 	 * The locale that was tested by IMessageCheck
 	 */
 	Locale getLocale();
-	
+
 	/**
 	 * The IMessage that was tested, this value can be null
 	 */

@@ -25,43 +25,42 @@ import org.eclipse.babel.editor.preferences.MsgEditorPreferences;
  */
 public class MessagesBundleGroupValidator {
 
-    // TODO Re-think... ??
+	// TODO Re-think... ??
 
-    public static void validate(MessagesBundleGroup messagesBundleGroup,
-            Locale locale, IValidationMarkerStrategy markerStrategy) {
-        // TODO check if there is a matching EclipsePropertiesEditorResource
-        // already open.
-        // else, create MessagesBundle from PropertiesIFileResource
+	public static void validate(MessagesBundleGroup messagesBundleGroup, Locale locale,
+			IValidationMarkerStrategy markerStrategy) {
+		// TODO check if there is a matching EclipsePropertiesEditorResource
+		// already open.
+		// else, create MessagesBundle from PropertiesIFileResource
 
-    	boolean performDuplicateValueCheck = MsgEditorPreferences.getInstance().getReportDuplicateValues();
+		boolean performDuplicateValueCheck = MsgEditorPreferences.getInstance().getReportDuplicateValues();
 
-        String[] keys = messagesBundleGroup.getMessageKeys();
-        for (int i = 0; i < keys.length; i++) {
-            String key = keys[i];
-            if (MsgEditorPreferences.getInstance().getReportMissingValues()) {
-            	IMessageCheckResult checkResult = MissingValueCheck.INSTANCE.checkKey(messagesBundleGroup, key, locale, messagesBundleGroup.getMessage(key, locale));
+		String[] keys = messagesBundleGroup.getMessageKeys();
+		for (int i = 0; i < keys.length; i++) {
+			String key = keys[i];
+			if (MsgEditorPreferences.getInstance().getReportMissingValues()) {
+				IMessageCheckResult checkResult = MissingValueCheck.INSTANCE.checkKey(messagesBundleGroup, key, locale,
+						messagesBundleGroup.getMessage(key, locale));
 
-                if (checkResult!=MessageCheckResult.OK) {
-                    markerStrategy.markFailed(new ValidationFailureEvent(
-                            messagesBundleGroup, locale, key,
-                            checkResult));
-                }
-            }
-            if (performDuplicateValueCheck) {
-                if (!MsgEditorPreferences.getInstance()
-                        .getReportDuplicateValuesOnlyInRootLocales()
-                        || (locale == null || locale.toString().length() == 0) ) {
-                    // either the locale is the root locale either
-                    // we report duplicated on all the locales anyways.
-                	IMessageCheckResult checkResult = DuplicateValueCheck.INSTANCE.checkKey(messagesBundleGroup, key, locale, messagesBundleGroup.getMessage(key, locale));
-                	if (checkResult!=MessageCheckResult.OK) {
-                        markerStrategy.markFailed(new ValidationFailureEvent(
-                                messagesBundleGroup, locale, key,
-                                checkResult));
-                	}
-                }
-            }
-        }
-    }
+				if (checkResult != MessageCheckResult.OK) {
+					markerStrategy
+							.markFailed(new ValidationFailureEvent(messagesBundleGroup, locale, key, checkResult));
+				}
+			}
+			if (performDuplicateValueCheck) {
+				if (!MsgEditorPreferences.getInstance().getReportDuplicateValuesOnlyInRootLocales()
+						|| (locale == null || locale.toString().length() == 0)) {
+					// either the locale is the root locale either
+					// we report duplicated on all the locales anyways.
+					IMessageCheckResult checkResult = DuplicateValueCheck.INSTANCE.checkKey(messagesBundleGroup, key,
+							locale, messagesBundleGroup.getMessage(key, locale));
+					if (checkResult != MessageCheckResult.OK) {
+						markerStrategy
+								.markFailed(new ValidationFailureEvent(messagesBundleGroup, locale, key, checkResult));
+					}
+				}
+			}
+		}
+	}
 
 }
