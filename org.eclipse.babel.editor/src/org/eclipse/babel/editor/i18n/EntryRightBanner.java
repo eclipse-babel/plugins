@@ -16,14 +16,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.eclipse.babel.core.message.checks.IMessageCheckResult;
-import org.eclipse.babel.core.message.checks.internal.DuplicateValueMessageCheckResult;
-import org.eclipse.babel.core.message.checks.internal.MissingValueCheckResult;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
-import org.eclipse.babel.editor.i18n.actions.ShowDuplicateAction;
-import org.eclipse.babel.editor.i18n.actions.ShowMissingAction;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -31,7 +26,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -99,27 +93,7 @@ public class EntryRightBanner extends Composite {
 						markerLabel.setText(marker.getText());
 					}
 				}
-//				FillLayout layout = new FillLayout();
-//				layout.marginWidth=5;
-//				comp.setLayout(layout);
-//				Link l = new Link(comp,SWT.NONE);
-//				l.setText(
-//						"This a custom tooltip you can: \n- pop up any control you want\n- define delays\n - ... \nGo and get Eclipse from <a>http://www.eclipse.org</a>");
-//
-//				l.addSelectionListener(new SelectionAdapter() {
-//					@Override
-//					public void widgetSelected(SelectionEvent e) {
-//						openURL();
-//					}
-//				});
 				return comp;
-			}
-
-			protected void openURL() {
-				MessageBox box = new MessageBox(getShell(),SWT.ICON_INFORMATION);
-				box.setText("Eclipse.org");
-				box.setMessage("Here is where we'd open the URL.");
-				box.open();
 			}
 		};
 		myTooltipLabel.setShift(new Point(-5, -5));
@@ -137,53 +111,25 @@ public class EntryRightBanner extends Composite {
      * @param warningIcon
      * @param colon
      */
-    private void updateMarkers() {
-        Display display = toolBarMgr.getControl().getDisplay();
-        // [RAP] only update markers, which belong to this UIThread
-        if (display.equals(Display.getCurrent()) && !isDisposed()) {
-            display.asyncExec(new Runnable() {
-            public void run() {
-                    if (isDisposed())
-                        return;
+	private void updateMarkers() {
+		Display display = toolBarMgr.getControl().getDisplay();
+		// [RAP] only update markers, which belong to this UIThread
+		if (display.equals(Display.getCurrent()) && !isDisposed()) {
+			display.asyncExec(new Runnable() {
+				public void run() {
+					if (isDisposed()) {
+						return;
+					}
 
-                boolean isMarked = false;
-                toolBarMgr.removeAll();
+					String key = editor.getSelectedKey();
+					Collection<IMessageCheckResult> checks = editor.getMarkers().getFailedChecks(key, locale);
 
-                String key = editor.getSelectedKey();
-                Collection<IMessageCheckResult> checks = editor.getMarkers()
-                        .getFailedChecks(key, locale);
-                if (checks != null) {
-                    for (IMessageCheckResult check : checks) {
-                        Action action = getCheckAction(key, check);
-                        if (action != null) {
-                            toolBarMgr.add(action);
-                            toolBarMgr.update(true);
-                            getParent().layout(true, true);
-                            isMarked = true;
-                        }
-                    }
-                }
-                toolBarMgr.update(true);
-                getParent().layout(true, true);
-             
-                warningIcon.setVisible(isMarked);
-                warningIcon.setData("markers", checks);
-            }
-        });
-        }
-
-    }
-
-    private Action getCheckAction(String key, IMessageCheckResult check) {
-        if (check instanceof MissingValueCheckResult checkResult) {
-            return new ShowMissingAction(key, locale);
-        } else if (check instanceof DuplicateValueMessageCheckResult checkResult) {
-            return new ShowDuplicateAction(
-            		checkResult.getDuplicateKeys(), key,
-                    locale);
-        }
-        return null;
-    }
+					warningIcon.setVisible(checks != null && checks.size() > 0);
+					warningIcon.setData("markers", checks);
+				}
+			});
+		}
+	}
 
     @Override
     public void dispose() {
