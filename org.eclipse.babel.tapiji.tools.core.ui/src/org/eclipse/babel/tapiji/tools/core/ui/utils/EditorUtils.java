@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -49,8 +50,7 @@ public class EditorUtils {
             String editor, String key) {
         // open the rb-editor for this file type and selects given msg key
         IEditorPart part = openEditor(page, file, editor);
-        if (part instanceof IMessagesEditor) {
-            IMessagesEditor msgEditor = (IMessagesEditor) part;
+        if (part instanceof IMessagesEditor msgEditor) {
             msgEditor.setSelectedKey(key);
         }
         return part;
@@ -60,13 +60,14 @@ public class EditorUtils {
         FileEditorInput input = new FileEditorInput(
                 (IFile) marker.getResource());
 
-        AbstractMarkerAnnotationModel model = (AbstractMarkerAnnotationModel) getAnnotationModel(marker);
         IDocument doc = JavaUI.getDocumentProvider().getDocument(input);
-
-        try {
-            model.updateMarker(doc, marker, getCurPosition(marker, model));
-        } catch (CoreException e) {
-            Logger.logError(e);
+        AbstractMarkerAnnotationModel model = (AbstractMarkerAnnotationModel) getAnnotationModel(marker);
+        if ( model != null ) {
+            try {
+                model.updateMarker(doc, marker, getCurPosition(marker, model));
+            } catch (CoreException e) {
+                Logger.logError(e);
+            }
         }
     }
 
@@ -79,14 +80,14 @@ public class EditorUtils {
 
     private static Position getCurPosition(IMarker marker,
             IAnnotationModel model) {
-        Iterator iter = model.getAnnotationIterator();
+        Iterator<Annotation> iter = model.getAnnotationIterator();
+        
         Logger.logInfo("Updates Position!");
         while (iter.hasNext()) {
-            Object curr = iter.next();
-            if (curr instanceof SimpleMarkerAnnotation) {
-                SimpleMarkerAnnotation annot = (SimpleMarkerAnnotation) curr;
-                if (marker.equals(annot.getMarker())) {
-                    return model.getPosition(annot);
+            Annotation annotation = iter.next();
+            if (annotation instanceof SimpleMarkerAnnotation simpleMarkerAnnotation ) {
+                if (marker.equals(simpleMarkerAnnotation.getMarker())) {
+                    return model.getPosition(simpleMarkerAnnotation);
                 }
             }
         }
