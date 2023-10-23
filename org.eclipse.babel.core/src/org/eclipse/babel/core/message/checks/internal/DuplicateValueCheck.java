@@ -12,11 +12,14 @@ package org.eclipse.babel.core.message.checks.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundle;
 import org.eclipse.babel.core.message.IMessagesBundleGroup;
 import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
+import org.eclipse.babel.core.message.checks.MessageCheckResult;
 import org.eclipse.babel.core.util.BabelUtils;
 
 /**
@@ -26,46 +29,35 @@ import org.eclipse.babel.core.util.BabelUtils;
  */
 public class DuplicateValueCheck implements IMessageCheck {
 
-    private String[] duplicateKeys;
+	public static final DuplicateValueCheck INSTANCE = new DuplicateValueCheck();
 
-    /**
-     * Constructor.
-     */
-    public DuplicateValueCheck() {
-        super();
-    }
+	/**
+	 * Constructor.
+	 */
+	private DuplicateValueCheck() {
+		super();
+	}
 
-    /**
-     * Resets the collected keys to null.
-     */
-    public void reset() {
-        duplicateKeys = null;
-    }
+	public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, String key, Locale locale,
+			IMessage message) {
+		Collection<String> keys = new ArrayList<>();
+		if (message != null) {
+			IMessagesBundle messagesBundle = messagesBundleGroup.getMessagesBundle(message.getLocale());
+			for (IMessage duplicateEntry : messagesBundle.getMessages()) {
+				if (!message.getKey().equals(duplicateEntry.getKey())
+						&& BabelUtils.equals(message.getValue(), duplicateEntry.getValue())) {
+					keys.add(duplicateEntry.getKey());
+				}
+			}
+			if (!keys.isEmpty()) {
+				keys.add(message.getKey());
+			}
+		}
 
-    public boolean checkKey(IMessagesBundleGroup messagesBundleGroup,
-            IMessage message) {
-        Collection<String> keys = new ArrayList<String>();
-        if (message != null) {
-            IMessagesBundle messagesBundle = messagesBundleGroup
-                    .getMessagesBundle(message.getLocale());
-            for (IMessage duplicateEntry : messagesBundle.getMessages()) {
-                if (!message.getKey().equals(duplicateEntry.getKey())
-                        && BabelUtils.equals(message.getValue(),
-                                duplicateEntry.getValue())) {
-                    keys.add(duplicateEntry.getKey());
-                }
-            }
-            if (!keys.isEmpty()) {
-                keys.add(message.getKey());
-            }
-        }
-
-        duplicateKeys = keys.toArray(new String[] {});
-        return !keys.isEmpty();
-    }
-
-    public String[] getDuplicateKeys() {
-        return duplicateKeys;
-    }
-
+		if (keys.isEmpty()) {
+			return MessageCheckResult.OK;
+		} else {
+			return new DuplicateValueMessageCheckResult(keys.toArray(String[]::new), key, locale, message, this);
+		}
+	}
 }

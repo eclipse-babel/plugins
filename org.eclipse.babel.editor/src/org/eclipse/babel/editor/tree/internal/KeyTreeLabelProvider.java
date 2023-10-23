@@ -13,6 +13,7 @@ package org.eclipse.babel.editor.tree.internal;
 import java.util.Collection;
 
 import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
 import org.eclipse.babel.core.message.tree.IKeyTreeNode;
 import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
@@ -81,7 +82,7 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
     @Override
     public Image getImage(Object element) {
         if (element instanceof KeyTreeNode node) {
-            Collection<IMessageCheck> c = editor.getMarkers().getFailedChecks(
+            Collection<IMessageCheckResult> c = editor.getMarkers().getFailedChecks(
                     node.getMessageKey());
             if (c == null || c.isEmpty()) {
                 // Return the default key image as no issue exists
@@ -145,7 +146,7 @@ public class KeyTreeLabelProvider extends ColumnLabelProvider implements
 
     public String getToolTipText(Object element) {
         if (element instanceof KeyTreeNode node) {
-            Collection<IMessageCheck> c = editor.getMarkers().getFailedChecks(
+            Collection<IMessageCheckResult> c = editor.getMarkers().getFailedChecks(
                     node.getMessageKey());
             if (c == null || c.isEmpty()) {
                 return null;

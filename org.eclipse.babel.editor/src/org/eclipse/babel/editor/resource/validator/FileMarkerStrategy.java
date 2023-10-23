@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.resource.validator;
 
-import org.eclipse.babel.core.message.checks.internal.DuplicateValueCheck;
-import org.eclipse.babel.core.message.checks.internal.MissingValueCheck;
+import org.eclipse.babel.core.message.checks.internal.DuplicateValueMessageCheckResult;
+import org.eclipse.babel.core.message.checks.internal.MissingValueCheckResult;
 import org.eclipse.babel.core.message.internal.MessagesBundle;
 import org.eclipse.babel.core.util.BabelUtils;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
@@ -31,7 +31,7 @@ public class FileMarkerStrategy implements IValidationMarkerStrategy {
      *      org.eclipse.babel.core.bundle.checks.IBundleEntryCheck)
      */
     public void markFailed(ValidationFailureEvent event) {
-        if (event.getCheck() instanceof MissingValueCheck) {
+        if (event.getCheckResult() instanceof MissingValueCheckResult) {
             MessagesBundle bundle = (MessagesBundle) event.getBundleGroup()
                     .getMessagesBundle(event.getLocale());
             addMarker((IResource) bundle.getResource().getSource(),
@@ -41,10 +41,9 @@ public class FileMarkerStrategy implements IValidationMarkerStrategy {
                     getSeverity(MsgEditorPreferences.getInstance()
                             .getReportMissingValuesLevel()));
 
-        } else if (event.getCheck() instanceof DuplicateValueCheck) {
+        } else if (event.getCheckResult() instanceof DuplicateValueMessageCheckResult checkResult ) {
             String duplicates = BabelUtils
-                    .join(((DuplicateValueCheck) event.getCheck())
-                            .getDuplicateKeys(), ", ");
+                    .join(checkResult.getDuplicateKeys(), ", ");
             MessagesBundle bundle = (MessagesBundle) event.getBundleGroup()
                     .getMessagesBundle(event.getLocale());
             addMarker((IResource) bundle.getResource().getSource(),
