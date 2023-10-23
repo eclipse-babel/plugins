@@ -17,6 +17,8 @@ import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundle;
 import org.eclipse.babel.core.message.IMessagesBundleGroup;
 import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
+import org.eclipse.babel.core.message.checks.MessageCheckResult;
 import org.eclipse.babel.core.util.BabelUtils;
 
 /**
@@ -26,25 +28,18 @@ import org.eclipse.babel.core.util.BabelUtils;
  */
 public class DuplicateValueCheck implements IMessageCheck {
 
-    private String[] duplicateKeys;
+	public static final DuplicateValueCheck INSTANCE = new DuplicateValueCheck();
 
     /**
      * Constructor.
      */
-    public DuplicateValueCheck() {
+    private DuplicateValueCheck() {
         super();
     }
 
-    /**
-     * Resets the collected keys to null.
-     */
-    public void reset() {
-        duplicateKeys = null;
-    }
-
-    public boolean checkKey(IMessagesBundleGroup messagesBundleGroup,
+    public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
             IMessage message) {
-        Collection<String> keys = new ArrayList<String>();
+        Collection<String> keys = new ArrayList<>();
         if (message != null) {
             IMessagesBundle messagesBundle = messagesBundleGroup
                     .getMessagesBundle(message.getLocale());
@@ -60,12 +55,10 @@ public class DuplicateValueCheck implements IMessageCheck {
             }
         }
 
-        duplicateKeys = keys.toArray(new String[] {});
-        return !keys.isEmpty();
+        if ( keys.isEmpty() ) {
+        	return MessageCheckResult.OK;
+        } else {
+        	return new DuplicateValueMessageCheckResult(keys.toArray(String[]::new), this);
+        }
     }
-
-    public String[] getDuplicateKeys() {
-        return duplicateKeys;
-    }
-
 }

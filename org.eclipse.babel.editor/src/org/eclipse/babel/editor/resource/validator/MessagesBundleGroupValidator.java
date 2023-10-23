@@ -12,6 +12,8 @@ package org.eclipse.babel.editor.resource.validator;
 
 import java.util.Locale;
 
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
+import org.eclipse.babel.core.message.checks.MessageCheckResult;
 import org.eclipse.babel.core.message.checks.internal.DuplicateValueCheck;
 import org.eclipse.babel.core.message.checks.internal.MissingValueCheck;
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
@@ -37,11 +39,12 @@ public class MessagesBundleGroupValidator {
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
             if (MsgEditorPreferences.getInstance().getReportMissingValues()) {
-                if (MissingValueCheck.MISSING_KEY.checkKey(messagesBundleGroup,
-                        messagesBundleGroup.getMessage(key, locale))) {
+            	IMessageCheckResult checkResult = MissingValueCheck.INSTANCE.checkKey(messagesBundleGroup, messagesBundleGroup.getMessage(key, locale));
+
+                if (checkResult!=MessageCheckResult.OK) {
                     markerStrategy.markFailed(new ValidationFailureEvent(
                             messagesBundleGroup, locale, key,
-                            MissingValueCheck.MISSING_KEY));
+                            checkResult));
                 }
             }
             if (performDuplicateValueCheck) {
@@ -50,13 +53,12 @@ public class MessagesBundleGroupValidator {
                         || (locale == null || locale.toString().length() == 0) ) {
                     // either the locale is the root locale either
                     // we report duplicated on all the locales anyways.
-                    DuplicateValueCheck duplicateCheck = new DuplicateValueCheck();
-                	if (duplicateCheck.checkKey(messagesBundleGroup,
-                            messagesBundleGroup.getMessage(key, locale))) {
+                	IMessageCheckResult checkResult = DuplicateValueCheck.INSTANCE.checkKey(messagesBundleGroup, messagesBundleGroup.getMessage(key, locale));
+                	if (checkResult!=MessageCheckResult.OK) {
                         markerStrategy.markFailed(new ValidationFailureEvent(
                                 messagesBundleGroup, locale, key,
-                                duplicateCheck));
-                    }
+                                checkResult));
+                	}
                 }
             }
         }

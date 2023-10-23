@@ -17,7 +17,10 @@ import org.eclipse.babel.core.message.IMessage;
 import org.eclipse.babel.core.message.IMessagesBundle;
 import org.eclipse.babel.core.message.IMessagesBundleGroup;
 import org.eclipse.babel.core.message.checks.IMessageCheck;
+import org.eclipse.babel.core.message.checks.IMessageCheckResult;
+import org.eclipse.babel.core.message.checks.MessageCheckResult;
 import org.eclipse.babel.core.message.checks.proximity.IProximityAnalyzer;
+import org.eclipse.babel.core.message.checks.proximity.LevenshteinDistanceAnalyzer;
 import org.eclipse.babel.core.util.BabelUtils;
 
 /**
@@ -30,10 +33,13 @@ public class SimilarValueCheck implements IMessageCheck {
     private String[] similarKeys;
     private IProximityAnalyzer analyzer;
 
+    /** The singleton */
+    public static final SimilarValueCheck INSTANCE = new SimilarValueCheck(LevenshteinDistanceAnalyzer.getInstance());
+    
     /**
      * Constructor.
      */
-    public SimilarValueCheck(IProximityAnalyzer analyzer) {
+    private SimilarValueCheck(IProximityAnalyzer analyzer) {
         super();
         this.analyzer = analyzer;
     }
@@ -42,7 +48,7 @@ public class SimilarValueCheck implements IMessageCheck {
      * @see org.eclipse.babel.core.message.internal.checks.IMessageCheck#checkKey(org.eclipse.babel.core.message.internal.MessagesBundleGroup,
      *      org.eclipse.babel.core.message.internal.Message)
      */
-    public boolean checkKey(IMessagesBundleGroup messagesBundleGroup,
+    public IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup,
             IMessage message) {
         Collection<String> keys = new ArrayList<String>();
         if (message != null) {
@@ -67,16 +73,11 @@ public class SimilarValueCheck implements IMessageCheck {
                 keys.add(message.getKey());
             }
         }
-        similarKeys = keys.toArray(new String[] {});
-        return !keys.isEmpty();
-    }
 
-    /**
-     * Gets similar keys.
-     * 
-     * @return similar keys
-     */
-    public String[] getSimilarMessageKeys() {
-        return similarKeys;
+        if ( !keys.isEmpty() ) {
+        	return MessageCheckResult.OK;
+        } else {
+        	return new SimilarValueMessageCheckResult(keys.toArray(String[]::new), this);
+        }
     }
 }

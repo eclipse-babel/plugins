@@ -31,7 +31,8 @@ public interface IMessageCheck {
      *            messages bundle group
      * @param message
      *            the message being tested
-     * @return <code>true</code> if condition is successfully tested
+     * @return <code>MessageCheckResult.OK</code> if condition is successfully tested
      */
-    boolean checkKey(IMessagesBundleGroup messagesBundleGroup, IMessage message);
+	IMessageCheckResult checkKey(IMessagesBundleGroup messagesBundleGroup, IMessage message);
+
 }
