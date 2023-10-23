@@ -11,17 +11,12 @@
 package org.eclipse.babel.editor.i18n;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.eclipse.babel.core.message.checks.IMessageCheck;
 import org.eclipse.babel.core.message.checks.IMessageCheckResult;
-import org.eclipse.babel.core.message.checks.internal.DuplicateValueCheck;
 import org.eclipse.babel.core.message.checks.internal.DuplicateValueMessageCheckResult;
-import org.eclipse.babel.core.message.checks.internal.MissingValueCheck;
 import org.eclipse.babel.core.message.checks.internal.MissingValueCheckResult;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
 import org.eclipse.babel.editor.i18n.actions.ShowDuplicateAction;
@@ -31,15 +26,11 @@ import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -51,9 +42,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class EntryRightBanner extends Composite {
 
-
     private Label warningIcon;
-    private final Map actionByMarkerIds = new HashMap();
+
     private final ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
     private final AbstractMessagesEditor editor;
     private final AbstractI18NEntry i18nEntry;
@@ -100,20 +90,28 @@ public class EntryRightBanner extends Composite {
 			@Override
 			protected Composite createContentArea(Composite parent) {
 				Composite comp = new Composite( parent, SWT.NONE);
-
-				FillLayout layout = new FillLayout();
-				layout.marginWidth=5;
-				comp.setLayout(layout);
-				Link l = new Link(comp,SWT.NONE);
-				l.setText(
-						"This a custom tooltip you can: \n- pop up any control you want\n- define delays\n - ... \nGo and get Eclipse from <a>http://www.eclipse.org</a>");
-
-				l.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						openURL();
+				Object data = warningIcon.getData("markers");
+				comp.setLayout(new RowLayout(SWT.VERTICAL));
+				if (data instanceof Collection<?> collection) {
+					Collection<IMessageCheckResult> markers = (Collection<IMessageCheckResult>) collection;
+					for ( IMessageCheckResult marker : markers) {
+						Label markerLabel = new Label(comp, SWT.NONE);
+						markerLabel.setText(marker.getText());
 					}
-				});
+				}
+//				FillLayout layout = new FillLayout();
+//				layout.marginWidth=5;
+//				comp.setLayout(layout);
+//				Link l = new Link(comp,SWT.NONE);
+//				l.setText(
+//						"This a custom tooltip you can: \n- pop up any control you want\n- define delays\n - ... \nGo and get Eclipse from <a>http://www.eclipse.org</a>");
+//
+//				l.addSelectionListener(new SelectionAdapter() {
+//					@Override
+//					public void widgetSelected(SelectionEvent e) {
+//						openURL();
+//					}
+//				});
 				return comp;
 			}
 
@@ -150,7 +148,7 @@ public class EntryRightBanner extends Composite {
 
                 boolean isMarked = false;
                 toolBarMgr.removeAll();
-                actionByMarkerIds.clear();
+
                 String key = editor.getSelectedKey();
                 Collection<IMessageCheckResult> checks = editor.getMarkers()
                         .getFailedChecks(key, locale);
@@ -167,9 +165,9 @@ public class EntryRightBanner extends Composite {
                 }
                 toolBarMgr.update(true);
                 getParent().layout(true, true);
-
+             
                 warningIcon.setVisible(isMarked);
-
+                warningIcon.setData("markers", checks);
             }
         });
         }

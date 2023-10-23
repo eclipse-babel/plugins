@@ -1,5 +1,7 @@
 package org.eclipse.babel.editor.i18n;
 
+import org.eclipse.babel.editor.util.BabelSharedImages;
+import org.eclipse.babel.editor.util.IBabelSharedImages;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
@@ -62,10 +64,10 @@ public abstract class LocaleWarningToolTip extends ToolTip {
 			headerCompsite.setLayout(headerLayout);
 			
 			this.titleImageLabel = new Label(headerCompsite, SWT.NONE);
-			this.titleImageLabel.setImage(event.display.getSystemImage(SWT.ICON_INFORMATION));
-			
+			this.titleImageLabel.setImage(BabelSharedImages.get(IBabelSharedImages.IMAGE_PROPERTIES_FILE));
+
 			this.titleTextLabel = new Label(headerCompsite, SWT.NONE);
-			this.titleTextLabel.setText(headerText);
+			this.titleTextLabel.setText("Resource bundle problems");
 			this.titleTextLabel.setFont(JFaceResources.getBannerFont());
 			this.titleTextLabel.setLayoutData(new GridData(GridData.FILL_BOTH));
 
