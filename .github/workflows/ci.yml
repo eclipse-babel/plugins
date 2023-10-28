@@ -42,7 +42,7 @@ jobs:
     - name: Build with Maven
       run: mvn clean verify --no-transfer-progress
     - name: Archive Babel Plugings Update Site
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with: 
         name: babel-update-site
         path: org.eclipse.babel.repository/target/org.eclipse.babel.repository*.zip
