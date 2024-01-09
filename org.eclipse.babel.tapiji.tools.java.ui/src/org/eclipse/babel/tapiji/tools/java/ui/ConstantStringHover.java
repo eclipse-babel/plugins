@@ -46,14 +46,15 @@ public class ConstantStringHover implements IJavaEditorTextHover {
 
         CompilationUnit cu = ASTutilsUI.getAstRoot(typeRoot);
 
-        if (cu == null) {
+        // There are a lot of things that can be null here. Better test
+        if (cu == null || cu.getJavaElement() == null || cu.getJavaElement().getResource() == null || cu.getJavaElement().getResource().getProject() == null ) {
             return;
         }
 
         this.manager = ResourceBundleManager.getManager(cu.getJavaElement()
                 .getResource().getProject());
 
-        // determine the element at the position of the cursur
+        // determine the element at the position of the cursor
         this.csf = new ResourceAuditVisitor(null, this.manager.getProject().getName());
         cu.accept(this.csf);
     }
@@ -70,6 +71,10 @@ public class ConstantStringHover implements IJavaEditorTextHover {
 
         if (hoverRegion == null) {
             return null;
+        }
+
+        if (this.csf == null || this.manager == null) {
+        	return null;
         }
 
         String bundleName = this.csf.getBundleReference(hoverRegion);
