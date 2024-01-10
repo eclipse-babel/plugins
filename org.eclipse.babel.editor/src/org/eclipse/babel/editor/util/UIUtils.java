@@ -36,6 +36,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.text.StringMatcher;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -324,6 +327,16 @@ public final class UIUtils {
         return false;
     }
 
-
+    @SuppressWarnings("unchecked")
+	public static <T extends ViewerFilter> T getFilter(Viewer viewer, Class<T> clazz) {
+    	if ( viewer instanceof StructuredViewer structuredViewer ) {
+    		for ( ViewerFilter viewerFilter : structuredViewer.getFilters()) {
+    			if ( clazz.isInstance(viewerFilter) ) {
+    				return (T)viewerFilter;
+    			}
+    		}
+    	}
+    	return null;
+    }
     
 }

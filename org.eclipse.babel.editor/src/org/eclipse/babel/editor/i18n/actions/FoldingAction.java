@@ -30,7 +30,7 @@ public class FoldingAction extends Action {
     public FoldingAction(AbstractI18NEntry i18NEntry) {
         super();
         this.i18NEntry = i18NEntry;
-        this.expanded = i18NEntry.getExpanded();
+//        this.expanded = i18NEntry.getExpanded();
         setText("Collapse");
         setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_MINUS));
         setToolTipText("TODO put something here"); // TODO put tooltip
@@ -42,13 +42,13 @@ public class FoldingAction extends Action {
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
-        if (i18NEntry.getExpanded()) {
-            setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_PLUS));
-            i18NEntry.setExpanded(false);
-        } else {
-            setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_MINUS));
-            i18NEntry.setExpanded(true);
-        }
+//        if (i18NEntry.getExpanded()) {
+//            setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_PLUS));
+//            i18NEntry.setExpanded(false);
+//        } else {
+//            setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_MINUS));
+//            i18NEntry.setExpanded(true);
+//        }
     }
 
 }

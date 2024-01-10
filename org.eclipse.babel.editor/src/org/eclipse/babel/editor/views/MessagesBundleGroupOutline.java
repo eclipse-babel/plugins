@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.babel.editor.views;
 
+import org.eclipse.babel.editor.i18n.FilterDropDown;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.tree.actions.CollapseAllAction;
 import org.eclipse.babel.editor.tree.actions.ExpandAllAction;
-import org.eclipse.babel.editor.tree.actions.FlatModelAction;
 import org.eclipse.babel.editor.tree.actions.TreeModelAction;
 import org.eclipse.babel.editor.tree.internal.KeyTreeContributor;
 import org.eclipse.jface.action.IToolBarManager;
@@ -103,11 +103,11 @@ public class MessagesBundleGroupOutline extends ContentOutlinePage {
         // ActionContext
         // IAction
 
-        toolBarMgr.add(new TreeModelAction(editor, getTreeViewer()));
-        toolBarMgr.add(new FlatModelAction(editor, getTreeViewer()));
+        toolBarMgr.add(new TreeModelAction(this.editor, getTreeViewer()));
         toolBarMgr.add(new Separator());
-        toolBarMgr.add(new ExpandAllAction(editor, getTreeViewer()));
-        toolBarMgr.add(new CollapseAllAction(editor, getTreeViewer()));
+        toolBarMgr.add(new ExpandAllAction(this.editor, getTreeViewer()));
+        toolBarMgr.add(new CollapseAllAction(this.editor, getTreeViewer()));
+        toolBarMgr.add(new FilterDropDown(this.editor, getTreeViewer()));
     }
     //
     //
