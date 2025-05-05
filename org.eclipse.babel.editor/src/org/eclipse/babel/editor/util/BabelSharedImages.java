@@ -51,6 +51,8 @@ public class BabelSharedImages {
 		localRegistry.put(IBabelSharedImages.IMAGE_PLUS, createImageDescriptor(IBabelSharedImages.IMAGE_PLUS));
 
 		localRegistry.put(IBabelSharedImages.IMAGE_SIMILAR, createImageDescriptor(IBabelSharedImages.IMAGE_SIMILAR));
+
+		localRegistry.put(IBabelSharedImages.IMAGE_VIEW_MENU, createImageDescriptor(IBabelSharedImages.IMAGE_VIEW_MENU));
 	}
 
 	private BabelSharedImages()
