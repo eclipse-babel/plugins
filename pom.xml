@@ -31,7 +31,7 @@ Contributors:
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tycho-version>3.0.4</tycho-version>
+    <tycho-version>5.0.4</tycho-version>
   </properties>
 
   <build>
