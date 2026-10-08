@@ -47,6 +47,11 @@ public abstract class AbstractMessagesResource implements IMessagesResource {
         return locale;
     }
 
+    @Override
+    public void dispose() {
+    	listeners.clear();
+    }
+    
     /**
      * @see org.eclipse.babel.core.message.internal.resource.IMessagesResource#
      *      addMessagesResourceChangeListener(org.eclipse.babel.core.message.resource

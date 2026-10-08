@@ -148,6 +148,7 @@ public class PropertiesIFileResource extends AbstractPropertiesResource {
      * to file changes: then unsubscribe it.
      */
     public void dispose() {
+    	super.dispose();
         if (this.listenerRegistry != null) {
             this.listenerRegistry.unsubscribe(this.fileListener);
         }

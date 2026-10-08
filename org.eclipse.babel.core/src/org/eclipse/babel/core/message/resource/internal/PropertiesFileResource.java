@@ -177,6 +177,7 @@ public class PropertiesFileResource extends AbstractPropertiesResource {
      */
     @Override
     public void dispose() {
+    	super.dispose();
         FileMonitor.getInstance().removeFileChangeListener(
                 this.fileChangeListener, file);
     }
