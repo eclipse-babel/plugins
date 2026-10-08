@@ -124,13 +124,18 @@ public class PropertiesDeserializer {
                     value = value.replaceAll("\\\\n", "\n"); //$NON-NLS-1$//$NON-NLS-2$
                 }
                 IMessage entry = messagesBundle.getMessage(key);
+                boolean addEntry = false;
                 if (entry == null) {
                     entry = new Message(key, locale);
-                    messagesBundle.addMessage(entry);
+                    addEntry = true;
                 }
                 entry.setActive(!isCommentedLine);
                 entry.setComment(comment);
                 entry.setText(value);
+                if ( addEntry ) {
+                    messagesBundle.addMessage(entry);
+                }
+
                 newKeys.add(key);
                 // parse comment line
             } else if (lineBuf.indexOf("#") == 0) { //$NON-NLS-1$
