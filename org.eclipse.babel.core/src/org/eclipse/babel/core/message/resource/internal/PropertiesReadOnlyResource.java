@@ -86,12 +86,4 @@ public class PropertiesReadOnlyResource extends AbstractPropertiesResource {
     public String getResourceLocationLabel() {
         return resourceLocationLabel;
     }
-
-    /**
-     * Called before this object will be discarded. Nothing to do: we were not
-     * listening to changes to this object.
-     */
-    public void dispose() {
-        // nothing to do.
-    }
 }

@@ -187,13 +187,4 @@ public class EclipsePropertiesEditorResource extends AbstractPropertiesResource 
     public void setResourceLocationLabel(String resourceLocationLabel) {
         _resourceLocationLabel = resourceLocationLabel;
     }
-
-    /**
-     * Called before this object will be discarded. Nothing to do: we were not
-     * listening to changes to this file ourselves.
-     */
-    public void dispose() {
-        // nothing to do.
-    }
-
 }
