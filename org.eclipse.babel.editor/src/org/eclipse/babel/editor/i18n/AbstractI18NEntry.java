@@ -23,6 +23,7 @@ import org.eclipse.babel.editor.IMessagesEditorChangeListener;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
 import org.eclipse.babel.editor.plugin.MessagesEditorPlugin;
+import org.eclipse.babel.editor.util.LocaleImageUtil;
 import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.babel.editor.widgets.NullableText;
 import org.eclipse.swt.SWT;
@@ -33,9 +34,11 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -101,8 +104,6 @@ public abstract class AbstractI18NEntry extends Composite {
         createTextbox();
         this.section.setClient(this.textBox);
 		this.section.setLayoutData( new GridData(GridData.FILL_BOTH));
-		
-
     }
 
     public AbstractMessagesEditor getResourceBundleEditor() {

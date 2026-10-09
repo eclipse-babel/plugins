@@ -19,8 +19,10 @@ import org.eclipse.babel.core.message.checks.IMessageCheckResult;
 import org.eclipse.babel.editor.IMessagesEditorChangeListener;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.internal.MessagesEditorChangeAdapter;
+import org.eclipse.babel.editor.util.LocaleImageUtil;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -35,7 +37,10 @@ import org.eclipse.ui.PlatformUI;
  * @author Pascal Essiembre
  */
 public class EntryRightBanner extends Composite {
-
+	
+	private static boolean showCountryFlags = false;		// To be controlled by preference
+	
+	private Label localeImage;
     private Label warningIcon;
 
     private final ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
@@ -73,6 +78,12 @@ public class EntryRightBanner extends Composite {
         layout.marginLeft = 0;
         layout.marginRight = 0;
         layout.marginTop = 0;
+
+        if ( showCountryFlags ) {
+        	this.localeImage = new Label(this, SWT.NONE);
+        	this.localeImage.setImage(LocaleImageUtil.getCountryIcon(this.locale));
+        	this.localeImage.setVisible(true);
+        }
 
         warningIcon = new Label(this, SWT.NONE);
         warningIcon.setImage(PlatformUI.getWorkbench().getSharedImages()
