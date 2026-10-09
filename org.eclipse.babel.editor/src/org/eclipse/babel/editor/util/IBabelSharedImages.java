@@ -47,4 +47,5 @@ public interface IBabelSharedImages {
 
 	public static final String IMAGE_WARNING = "warning.gif"; //$NON-NLS-1$
     public static final String IMAGE_ERROR = "error_co.gif"; //$NON-NLS-1$
+	public static final String IMAGE_VIEW_MENU = "view_menu.png"; //$NON-NLS-1$
 }

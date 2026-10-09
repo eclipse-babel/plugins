@@ -43,6 +43,10 @@ public class TreeModelAction extends AbstractTreeAction {
     public void run() {
         KeyTreeContentProvider contentProvider = (KeyTreeContentProvider) treeViewer
                 .getContentProvider();
-        contentProvider.setTreeType(TreeType.Tree);
+        
+        TreeType currentTreeType = contentProvider.getTreeType();
+        TreeType newTreeType = currentTreeType == TreeType.Tree ? TreeType.Flat : TreeType.Tree;	// Toggle tree type.
+        contentProvider.setTreeType(newTreeType);
+        setChecked(newTreeType == TreeType.Tree);
     }
 }

@@ -28,7 +28,6 @@ import org.eclipse.babel.core.message.internal.MessagesBundleGroupAdapter;
 import org.eclipse.babel.editor.resource.validator.IValidationMarkerStrategy;
 import org.eclipse.babel.editor.resource.validator.MessagesBundleGroupValidator;
 import org.eclipse.babel.editor.resource.validator.ValidationFailureEvent;
-import org.eclipse.babel.editor.util.UIUtils;
 import org.eclipse.swt.widgets.Display;
 
 /**

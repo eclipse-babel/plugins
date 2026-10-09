@@ -13,7 +13,6 @@ package org.eclipse.babel.editor.i18n;
 import org.eclipse.babel.editor.internal.AbstractMessagesEditor;
 import org.eclipse.babel.editor.tree.actions.CollapseAllAction;
 import org.eclipse.babel.editor.tree.actions.ExpandAllAction;
-import org.eclipse.babel.editor.tree.actions.FlatModelAction;
 import org.eclipse.babel.editor.tree.actions.TreeModelAction;
 import org.eclipse.babel.editor.tree.internal.KeyTreeContributor;
 import org.eclipse.jface.action.Separator;
@@ -24,6 +23,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * Tree for displaying and navigating through resource bundle keys.
@@ -49,40 +50,47 @@ public class SideNavComposite extends Composite {
      */
     public SideNavComposite(Composite parent,
             final AbstractMessagesEditor editor) {
-        super(parent, SWT.BORDER);
+        super(parent, SWT.NONE);
         this.editor = editor;
-
+        setLayout(new GridLayout(1, true));
+        
+        FormToolkit toolKit = new FormToolkit(this.getDisplay());
+        Section messageKeySection = toolKit.createSection(this, Section.TITLE_BAR | Section.EXPANDED );
+        messageKeySection.setText("Message keys");
         // Create a toolbar.
         ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
-        ToolBar toolBar = toolBarMgr.createControl(this);
+        ToolBar toolBar = toolBarMgr.createControl(messageKeySection);
 
-        this.treeViewer = new TreeViewer(this, SWT.MULTI | SWT.BORDER
+        messageKeySection.setTextClient(toolBar);
+
+        messageKeySection.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
+        
+        this.treeViewer = new TreeViewer(messageKeySection, SWT.MULTI | SWT.BORDER
                 | SWT.V_SCROLL | SWT.H_SCROLL);
 
-        setLayout(new GridLayout(1, false));
+        // createTopSection();
+        createKeyTree();
+        
+        messageKeySection.setClient(this.treeViewer.getControl());
 
-        GridData gid;
-
-        gid = new GridData();
-        gid.horizontalAlignment = GridData.END;
-        gid.verticalAlignment = GridData.BEGINNING;
-        toolBar.setLayoutData(gid);
-        toolBarMgr.add(new TreeModelAction(editor, treeViewer));
-        toolBarMgr.add(new FlatModelAction(editor, treeViewer));
+        toolBarMgr.add(new TreeModelAction(this.editor, this.treeViewer));
         toolBarMgr.add(new Separator());
-        toolBarMgr.add(new ExpandAllAction(editor, treeViewer));
-        toolBarMgr.add(new CollapseAllAction(editor, treeViewer));
+        toolBarMgr.add(new ExpandAllAction(this.editor, this.treeViewer));
+        toolBarMgr.add(new CollapseAllAction(this.editor, this.treeViewer));
+
+        toolBarMgr.add(new FilterDropDown(this.editor, this.treeViewer));
+
         toolBarMgr.update(true);
 
         // TODO have two toolbars, one left-align, and one right, with drop
         // down menu
         // initListener();
-
-        // createTopSection();
-        createKeyTree();
         textBoxComp = new SideNavTextBoxComposite(this, editor);
+        textBoxComp.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
     }
 
+    
+    
     // private void initListener() {
     // IResourceChangeListener listener = new IResourceChangeListener() {
     //
@@ -118,16 +126,8 @@ public class SideNavComposite extends Composite {
      * Creates the middle (tree) section of this composite.
      */
     private void createKeyTree() {
-
-        GridData gridData = new GridData();
-        gridData.verticalAlignment = GridData.FILL;
-        gridData.grabExcessVerticalSpace = true;
-        gridData.horizontalAlignment = GridData.FILL;
-        gridData.grabExcessHorizontalSpace = true;
-
         KeyTreeContributor treeContributor = new KeyTreeContributor(editor);
         treeContributor.contribute(treeViewer);
-        treeViewer.getTree().setLayoutData(gridData);
 
     }
 

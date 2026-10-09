@@ -22,11 +22,9 @@ import java.util.Locale;
 
 import org.eclipse.babel.core.message.IMessagesBundle;
 import org.eclipse.babel.core.message.internal.IMessagesBundleGroupListener;
-import org.eclipse.babel.core.message.internal.IMessagesBundleListener;
 import org.eclipse.babel.core.message.internal.MessageException;
 import org.eclipse.babel.core.message.internal.MessagesBundle;
 import org.eclipse.babel.core.message.internal.MessagesBundleGroup;
-import org.eclipse.babel.core.message.internal.MessagesBundleGroupAdapter;
 import org.eclipse.babel.core.message.manager.RBManager;
 import org.eclipse.babel.core.message.resource.IMessagesResource;
 import org.eclipse.babel.core.message.tree.internal.AbstractKeyTreeModel;
@@ -476,7 +474,12 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
         for (IMessagesEditorChangeListener listener : changeListeners) {
             listener.editorDisposed();
         }
-        i18nPage.dispose();
+
+        if(i18nPage != null) {
+        	this.i18nPage.dispose();
+        	this.i18nPage = null;
+        }
+
         for (ITextEditor textEditor : textEditorsIndex) {
             textEditor.dispose();
         }
@@ -553,22 +556,8 @@ public abstract class AbstractMessagesEditor extends MultiPageEditorPart
         return i18nPage;
     }
 
-    /**
-     * one of the SHOW_* constants defined in the
-     * {@link IMessagesEditorChangeListener}
-     */
-    private int showOnlyMissingAndUnusedKeys = IMessagesEditorChangeListener.SHOW_ALL;
-
-    /**
-     * @return true when only unused and missing keys should be displayed. flase
-     *         by default.
-     */
-    public int isShowOnlyUnusedAndMissingKeys() {
-        return showOnlyMissingAndUnusedKeys;
-    }
-
-    public void setShowOnlyUnusedMissingKeys(int showFlag) {
-        showOnlyMissingAndUnusedKeys = showFlag;
+    public void notifyChange(int showFlag)
+    {
         for (IMessagesEditorChangeListener listener : getChangeListeners()) {
             listener.showOnlyUnusedAndMissingChanged(showFlag);
         }

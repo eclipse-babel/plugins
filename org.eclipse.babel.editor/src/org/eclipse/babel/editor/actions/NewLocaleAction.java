@@ -33,18 +33,14 @@ public class NewLocaleAction extends Action {
     private AbstractMessagesEditor editor;
 
     /**
+     * @param editor2 
      * 
      */
-    public NewLocaleAction() {
+    public NewLocaleAction(AbstractMessagesEditor editor) {
         super("New &Locale...");
+        this.editor = editor;
         setToolTipText("Add a new locale to the resource bundle.");
         setImageDescriptor(BabelSharedImages.getDescriptor(IBabelSharedImages.IMAGE_NEW_PROPERTIES_FILE));
-    }
-
-    // TODO RBEditor hold such an action registry. Then move this method to
-    // constructor
-    public void setEditor(AbstractMessagesEditor editor) {
-        this.editor = editor;
     }
 
     /*
